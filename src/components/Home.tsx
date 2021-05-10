@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Card, Grid, Typography } from '@material-ui/core/';
+import { Card, Grid } from '@material-ui/core/';
 import TarotWedding from './TarotWedding';
 import TarotLovers from './TarotLovers';
 import TarotGuests from './TarotGuests';
@@ -27,7 +27,7 @@ class Home extends Component<any, any> {
           height: '100vh',
         }}
       >
-        <ReactCardCarousel spread='wide'>
+        <ReactCardCarousel spread='wide' style={{ cursor: 'pointer' }}>
           <Card elevation={12} style={{ width: this.state.width }}>
             <TarotLovers />
           </Card>

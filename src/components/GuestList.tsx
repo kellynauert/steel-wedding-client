@@ -219,8 +219,7 @@ class GuestList extends Component<MyProps, MyState> {
       {
         field: 'groupId',
         headerName: 'Group',
-        valueGetter: (params) => params.value,
-        valueFormatter: (params) => this.state.groups[params.value],
+        valueGetter: (params) => this.state.groups[params.value],
         flex: 1,
         editable: true,
       },

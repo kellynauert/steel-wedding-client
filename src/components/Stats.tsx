@@ -1,14 +1,5 @@
 import React, { Component } from 'react';
-import {
-  Grid,
-  Dialog,
-  Box,
-  IconButton,
-  Button,
-  DialogActions,
-  Tooltip,
-  Typography,
-} from '@material-ui/core';
+import { Grid, Box, Typography } from '@material-ui/core';
 import {
   mdiFish,
   mdiGlassMugVariant,
@@ -16,6 +7,7 @@ import {
   mdiCastle,
   mdiCards,
   mdiMailboxOpen,
+  mdiCommentQuestion,
 } from '@mdi/js';
 import Icon from '@mdi/react';
 
@@ -75,6 +67,29 @@ class Stats extends Component<any, MyState> {
               {this.props.data.attending + this.props.data.plusOnes}
             </Typography>
             <Typography variant='body1'>Attending</Typography>
+          </Box>
+        </Grid>
+        <Grid item md={1}>
+          <Box textAlign='center'>
+            <Typography
+              variant='h2'
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <Icon
+                style={{ marginRight: '8px' }}
+                path={mdiCommentQuestion}
+                size={1}
+                color='indigo'
+              />
+              {this.props.data.invited -
+                this.props.data.notAttending -
+                this.props.data.attending}
+            </Typography>
+            <Typography variant='body1'>No Response</Typography>
           </Box>
         </Grid>
         <Grid item md={1}>

@@ -56,21 +56,19 @@ class TarotGuests extends Component<MyProps, MyState> {
   };
 
   searchFunction = () => {
-    let items = this.state.groups
-      .sort((a, b) => a.id - b.id)
-      .filter((item) => {
-        let found = false;
-        item.guests.forEach((guest: Guest) => {
-          let search =
-            (guest.firstName ? guest.firstName.toLowerCase() : '') +
-            ' ' +
-            (guest.lastName ? guest.lastName.toLowerCase() : '');
-          if (search.includes(this.state.searchTerm.toLowerCase())) {
-            found = true;
-          }
-        });
-        return found;
+    let items = this.state.groups.sort().filter((item) => {
+      let found = false;
+      item.guests.forEach((guest: Guest) => {
+        let search =
+          (guest.firstName ? guest.firstName.toLowerCase() : '') +
+          ' ' +
+          (guest.lastName ? guest.lastName.toLowerCase() : '');
+        if (search.includes(this.state.searchTerm.toLowerCase())) {
+          found = true;
+        }
       });
+      return found;
+    });
     return items;
   };
 
