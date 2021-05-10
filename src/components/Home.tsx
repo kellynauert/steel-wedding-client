@@ -4,7 +4,7 @@ import TarotWedding from './TarotWedding';
 import TarotLovers from './TarotLovers';
 import TarotGuests from './TarotGuests';
 import ReactCardCarousel from 'react-card-carousel';
-
+import Background from './Background';
 class Home extends Component<any, any> {
   constructor(props) {
     super(props);
@@ -27,6 +27,7 @@ class Home extends Component<any, any> {
           height: '100vh',
         }}
       >
+        <Background />
         <ReactCardCarousel spread='wide' style={{ cursor: 'pointer' }}>
           <Card elevation={12} style={{ width: this.state.width }}>
             <TarotLovers />

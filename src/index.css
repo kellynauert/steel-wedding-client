@@ -43,3 +43,32 @@ img {
 ::-webkit-scrollbar-thumb:hover {
   background: #361344;
 }
+.card1 {
+  position: absolute;
+  background-repeat: repeat;
+  will-change: transform;
+}
+
+.card1 {
+  width: 200%;
+  height: 100%;
+  background-size: 100%;
+  background-image: url(https://img.pngio.com/star-png-images-transparent-free-download-pngmartcom-transparent-stars-background-1680_480.png);
+}
+
+.containerbg {
+  width: 3000px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: black;
+  background-size: contain;
+  background-repeat: repeat;
+  opacity: 0.7;
+  background-image: url(https://img.pngio.com/star-png-images-transparent-free-download-pngmartcom-transparent-stars-background-1680_480.png);
+}
+
+body {
+  overflow: hidden;
+}
