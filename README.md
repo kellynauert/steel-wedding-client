@@ -19,6 +19,7 @@ This app was created as my wedding information website with an integrated RSVP s
 ## Deployment
 
 1. From main/master in client/server directory, 'Git push Heroku main/master'
+
    _Dialect Options in the db.js must **NOT** be commented out when deployed!_
 
 2. If pushing client, run 'NPM run build'
