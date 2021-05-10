@@ -4,20 +4,20 @@ This app was created as my wedding information website with an integrated RSVP s
 
 ## Project Set Up
 
-### Clone Repo
+1. Clone Repo
 
-### Run 'NPM Install' in both server and client directory
+2. Run 'NPM Install' in both server and client directory
 
 ## Local development
 
-### Run 'Nodemon' in the server directory
+1. Run 'Nodemon' in the server directory
 
 Dialect Options in the db.js must be commented out to run locally!
 
-### Run 'NPM Start' in the client directory
+2. Run 'NPM Start' in the client directory
 
 ## Public site
 
-### From main/master in client/server directory, 'Git push Heroku main/master'
+1. From main/master in client/server directory, 'Git push Heroku main/master'
 
-### If pushing client, run 'NPM run build'
+2. If pushing client, run 'NPM run build'
