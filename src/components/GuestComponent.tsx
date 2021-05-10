@@ -147,7 +147,7 @@ class GuestComponent extends Component<MyProps, MyState> {
                         onChange={this.handleChange}
                         disabled={
                           this.props.guest.over21
-                            ? this.props.guest.over21
+                            ? !this.props.guest.over21
                             : undefined
                         }
                       />
