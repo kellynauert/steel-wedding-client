@@ -12,7 +12,7 @@ This app was created as my wedding information website with an integrated RSVP s
 
 1. Run 'Nodemon' in the server directory
 
-- _Dialect Options in the db.js must be commented out to run locally!_
+   _Dialect Options in the db.js must be commented out to run locally!_
 
 2. Run 'NPM Start' in the client directory
 
@@ -20,4 +20,4 @@ This app was created as my wedding information website with an integrated RSVP s
 
 1. From main/master in client/server directory, 'Git push Heroku main/master'
 
-- If pushing client, run 'NPM run build'
+   If pushing client, run 'NPM run build'
