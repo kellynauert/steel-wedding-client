@@ -313,14 +313,14 @@ class EditGuest extends Component<MyProps, MyState> {
                         <Checkbox
                           defaultChecked={
                             this.state.diet
-                              ? this.state.diet.includes('Vegan')
+                              ? this.state.diet.includes('Pescatarian')
                               : undefined
                           }
                           onChange={this.handleDietChange}
-                          name='Vegan'
+                          name='Pescatarian'
                         />
                       }
-                      label='Vegan'
+                      label='Pescatarian'
                     />
                   </Grid>
                   <Grid item xs={12}>

@@ -24,3 +24,22 @@ img {
   min-width: 25%;
   max-width: 50%;
 }
+::-webkit-scrollbar {
+  height: 4px;
+  width: 6px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #9d70b1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #602678;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #361344;
+}

@@ -224,139 +224,148 @@ class TarotGuests extends Component<MyProps, MyState> {
             </Button>
           </DialogActions>
         </Dialog>
-        <Grid item xs={12} md={6} lg={3}>
-          <Card elevation={3}>
-            <CardContent
+
+        <CardContent
+          style={{
+            backgroundImage: `url(${bg})`,
+            backgroundSize: '100%',
+            backgroundRepeat: 'repeat-y',
+          }}
+        >
+          <Box mb={1}>
+            <Typography variant='h3' align='center'>
+              RSVP
+            </Typography>
+          </Box>
+          <Box
+            style={{
+              border: '#602678 6px solid',
+              borderBottom: 'none',
+              padding: '18px',
+            }}
+          >
+            <Box
               style={{
-                backgroundImage: `url(${bg})`,
-                backgroundSize: '100%',
-                backgroundRepeat: 'repeat-y',
+                height: '100px',
+                backgroundImage: `url(${search})`,
+                backgroundSize: 'contain',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'right',
+                display: 'flex',
+                padding: '16px',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
               }}
             >
-              <Box mb={1}>
-                <Typography variant='h3' align='center'>
-                  RSVP
-                </Typography>
-              </Box>
+              <Typography variant='body1' align='center'>
+                Search your name
+              </Typography>
 
-              <Box
-                style={{
-                  border: '#602678 6px solid',
-                  padding: '18px',
-                }}
-              >
-                <Box
-                  style={{
-                    height: '100px',
-                    backgroundImage: `url(${search})`,
-                    backgroundSize: 'contain',
-                    backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'right',
-                    display: 'flex',
-                    padding: '16px',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <Typography variant='body1' align='center'>
-                    Search your name
-                  </Typography>
-
-                  <TextField
-                    fullWidth
-                    placeholder='Search Here'
-                    onChange={(e) => this.handleChange(e)}
-                  />
-                </Box>
-                <Typography
-                  variant='body1'
-                  align='center'
-                  style={{ margin: '16px' }}
-                >
-                  Select your card
-                </Typography>
-                <Grid container spacing={2}>
-                  {this.searchFunction().map((group, index) => {
-                    return (
-                      <Grid item xs={12} key={group.id}>
-                        <Card
+              <TextField
+                fullWidth
+                placeholder='Search Here'
+                onChange={(e) => this.handleChange(e)}
+              />
+            </Box>
+          </Box>
+          <Box
+            style={{
+              border: '#602678 6px solid',
+              padding: '18px',
+              overflowY: 'scroll',
+              overflowX: 'hidden',
+              height: '70vh',
+              borderRight: 'none',
+              marginTop: '-2px',
+            }}
+          >
+            <Typography
+              variant='body1'
+              align='center'
+              style={{ marginBottom: '16px' }}
+            >
+              Select your card
+            </Typography>
+            <Grid container spacing={2}>
+              {this.searchFunction().map((group, index) => {
+                return (
+                  <Grid item xs={12} key={group.id}>
+                    <Card
+                      style={{
+                        borderRadius: '0',
+                        cursor: 'pointer',
+                      }}
+                      onClick={this.handleOpen(group)}
+                    >
+                      <Box
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          flexDirection: 'column',
+                        }}
+                        mt={1}
+                      >
+                        <img src={floret} style={{ width: '50%' }} alt='' />
+                      </Box>
+                      <CardContent>
+                        <Grid
+                          container
+                          spacing={2}
                           style={{
-                            borderRadius: '0',
-                            cursor: 'pointer',
+                            display: 'flex',
+                            alignContent: 'center',
                           }}
-                          onClick={this.handleOpen(group)}
                         >
-                          <Box
+                          <Grid item xs={1} style={{ display: 'flex' }}>
+                            <img src={floretLeft} alt='' />
+                          </Grid>
+                          <Grid item container xs={10} spacing={2}>
+                            {group.guests
+                              .sort((a, b) => a.id - b.id)
+                              .map((guest, index) => {
+                                return (
+                                  <Grid item xs key={guest.id}>
+                                    <Typography
+                                      align='center'
+                                      style={{
+                                        whiteSpace: 'nowrap',
+                                      }}
+                                    >
+                                      {guest.firstName} {guest.lastName}
+                                    </Typography>
+                                  </Grid>
+                                );
+                              })}
+                          </Grid>
+                          <Grid
+                            item
+                            xs={1}
                             style={{
                               display: 'flex',
-                              alignItems: 'center',
-                              flexDirection: 'column',
-                            }}
-                            mt={1}
-                          >
-                            <img src={floret} style={{ width: '50%' }} alt='' />
-                          </Box>
-                          <CardContent>
-                            <Grid
-                              container
-                              spacing={2}
-                              style={{
-                                display: 'flex',
-                                alignContent: 'center',
-                              }}
-                            >
-                              <Grid item xs={1} style={{ display: 'flex' }}>
-                                <img src={floretLeft} alt='' />
-                              </Grid>
-                              <Grid item container xs={10} spacing={2}>
-                                {group.guests
-                                  .sort((a, b) => a.id - b.id)
-                                  .map((guest, index) => {
-                                    return (
-                                      <Grid item xs key={guest.id}>
-                                        <Typography
-                                          align='center'
-                                          style={{
-                                            whiteSpace: 'nowrap',
-                                          }}
-                                        >
-                                          {guest.firstName} {guest.lastName}
-                                        </Typography>
-                                      </Grid>
-                                    );
-                                  })}
-                              </Grid>
-                              <Grid
-                                item
-                                xs={1}
-                                style={{
-                                  display: 'flex',
-                                  transform: 'scaleX(-1)',
-                                }}
-                              >
-                                <img src={floretLeft} alt='' />
-                              </Grid>
-                            </Grid>
-                          </CardContent>
-                          <Box
-                            mb={1}
-                            style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              flexDirection: 'column',
+                              transform: 'scaleX(-1)',
                             }}
                           >
-                            <img src={floret} style={{ width: '50%' }} alt='' />
-                          </Box>
-                        </Card>
-                      </Grid>
-                    );
-                  })}
-                </Grid>
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
+                            <img src={floretLeft} alt='' />
+                          </Grid>
+                        </Grid>
+                      </CardContent>
+                      <Box
+                        mb={1}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          flexDirection: 'column',
+                        }}
+                      >
+                        <img src={floret} style={{ width: '50%' }} alt='' />
+                      </Box>
+                    </Card>
+                  </Grid>
+                );
+              })}
+            </Grid>
+          </Box>
+        </CardContent>
       </>
     );
   }

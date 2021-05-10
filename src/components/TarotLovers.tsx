@@ -6,41 +6,37 @@ import bg from '../assets/bg.png';
 class TarotLovers extends Component {
   render() {
     return (
-      <Grid item xs={12} md={6} lg={3}>
-        <Card elevation={3}>
-          <CardContent
-            style={{
-              backgroundImage: `url(${bg})`,
-              backgroundSize: '100%',
-              backgroundRepeat: 'repeat-y',
-            }}
-          >
-            <Box mb={1}>
-              <Typography variant='h3' align='center'>
-                The Lovers
-              </Typography>
-            </Box>
-            <img
-              src={image}
-              alt='skeleton lovers'
-              style={{ mixBlendMode: 'multiply', border: '#783426 6px solid' }}
-            ></img>
-            <div
-              style={{
-                mixBlendMode: 'multiply',
-                border: '#783426 6px solid',
-                padding: '10px',
-                borderTop: 'none',
-                marginTop: '-5px',
-              }}
-            >
-              <Typography variant='h1' align='center'>
-                Kelly & Blake
-              </Typography>
-            </div>
-          </CardContent>
-        </Card>
-      </Grid>
+      <CardContent
+        style={{
+          backgroundImage: `url(${bg})`,
+          backgroundSize: '100%',
+          backgroundRepeat: 'repeat-y',
+        }}
+      >
+        <Box mb={1}>
+          <Typography variant='h3' align='center'>
+            The Lovers
+          </Typography>
+        </Box>
+        <img
+          src={image}
+          alt='skeleton lovers'
+          style={{ mixBlendMode: 'multiply', border: '#783426 6px solid' }}
+        ></img>
+        <div
+          style={{
+            mixBlendMode: 'multiply',
+            border: '#783426 6px solid',
+            padding: '10px',
+            borderTop: 'none',
+            marginTop: '-5px',
+          }}
+        >
+          <Typography variant='h1' align='center'>
+            Kelly & Blake
+          </Typography>
+        </div>
+      </CardContent>
     );
   }
 }

@@ -17,6 +17,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import EditGuest from './EditGuest';
 import { Group, Guest } from '../interfaces';
 import APIURL from '../helpers/environment';
+import Stats from './Stats';
 
 interface MyState {
   guests: Guest[] | null;
@@ -25,6 +26,7 @@ interface MyState {
   openDialog: boolean;
   newGuest: Guest | null;
   role: string;
+  stats: {};
 }
 
 interface MyProps {
@@ -41,6 +43,7 @@ class GuestList extends Component<MyProps, MyState> {
       openDialog: false,
       newGuest: null,
       role: this.props.role,
+      stats: {},
     };
     console.log(props);
   }
@@ -56,7 +59,21 @@ class GuestList extends Component<MyProps, MyState> {
   componentDidMount() {
     this.fetchGuestList();
     this.fetchGroups();
+    this.fetchStats();
   }
+
+  fetchStats = () => {
+    fetch(`${APIURL}/guest/master/count`, {
+      method: 'GET',
+      headers: new Headers({
+        'Content-Type': 'application/json',
+        Authorization: localStorage.token,
+      }),
+    })
+      .then((response) => response.json())
+      .then((response) => this.setState({ stats: response }))
+      .then(() => console.log(this.state.stats));
+  };
   handleErrors = (response) => {
     if (response.message === 'Not Authorized') {
       this.handleOpen();
@@ -428,11 +445,19 @@ class GuestList extends Component<MyProps, MyState> {
               display: 'flex',
               flexDirection: 'column',
               width: '100%',
-              height: '95vh',
+              height: '90vh',
               padding: '16px',
             }}
           >
-            <Box py={2}>
+            <Box
+              py={2}
+              pt={2}
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+              }}
+            >
+              <Stats data={this.state.stats} />
               <Tooltip
                 arrow
                 placement='right'

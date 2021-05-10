@@ -116,7 +116,7 @@ class GroupList extends Component<MyProps, MyState> {
               display: 'flex',
               flexDirection: 'column',
               width: '100%',
-              height: '95vh',
+              height: '90vh',
               padding: '16px',
             }}
           >

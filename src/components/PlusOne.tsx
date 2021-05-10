@@ -222,12 +222,12 @@ class PlusOne extends Component<MyProps, MyState> {
               <FormControlLabel
                 control={
                   <Checkbox
-                    defaultChecked={this.state.diet.includes('Vegan')}
+                    defaultChecked={this.state.diet.includes('Pescatarian')}
                     onChange={this.handleDietChange}
-                    name='Vegan'
+                    name='Pescatarian'
                   />
                 }
-                label='Vegan'
+                label='Pescatarian'
               />
             </Grid>
             <Grid item xs={12}>
