@@ -8,7 +8,7 @@ import {
   DialogActions,
   Tooltip,
 } from '@material-ui/core';
-import { DataGrid } from '@material-ui/data-grid';
+import { DataGrid, GridToolbarExport } from '@material-ui/data-grid';
 import CheckCircleOutlineOutlinedIcon from '@material-ui/icons/CheckCircleOutlineOutlined';
 import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -32,7 +32,9 @@ interface MyState {
 interface MyProps {
   role: string;
 }
-
+function CustomToolbar() {
+  return <GridToolbarExport />;
+}
 class GuestList extends Component<MyProps, MyState> {
   constructor(props) {
     super(props);
@@ -259,6 +261,7 @@ class GuestList extends Component<MyProps, MyState> {
       {
         field: 'diet',
         headerName: 'Diet',
+        valueGetter: (params) => params.value?.join(),
         flex: 0.5,
         editable: true,
       },
@@ -488,6 +491,7 @@ class GuestList extends Component<MyProps, MyState> {
                 disableColumnMenu
                 rows={this.state.guests}
                 onEditCellChangeCommitted={this.handleEditCellChange}
+                components={{ Toolbar: CustomToolbar }}
               />
             ) : null}
           </Box>

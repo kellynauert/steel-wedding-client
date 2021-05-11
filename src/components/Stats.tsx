@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Grid, Box, Typography } from '@material-ui/core';
+import { Grid, Box, Typography, Tooltip } from '@material-ui/core';
 import {
   mdiFish,
   mdiGlassMugVariant,
@@ -50,22 +50,31 @@ class Stats extends Component<any, MyState> {
         </Grid>
         <Grid item md={1}>
           <Box textAlign='center'>
-            <Typography
-              variant='h2'
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <Icon
-                style={{ marginRight: '8px' }}
-                path={mdiCastle}
-                size={1}
-                color='grey'
-              />
-              {this.props.data.attending + this.props.data.plusOnes}
+            <Typography variant='h2'>
+              <Tooltip
+                arrow
+                placement='top'
+                title={`Invited: ${this.props.data.attending}, Plus Ones: ${this.props.data.plusOnes}`}
+              >
+                <span
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Icon
+                    style={{ marginRight: '8px' }}
+                    path={mdiCastle}
+                    size={1}
+                    color='grey'
+                  />
+
+                  {this.props.data.attending + this.props.data.plusOnes}
+                </span>
+              </Tooltip>
             </Typography>
+
             <Typography variant='body1'>Attending</Typography>
           </Box>
         </Grid>
