@@ -1,5 +1,6 @@
 let APIURL = '';
 
+// eslint-disable-next-line default-case
 switch (window.location.hostname) {
   // this is the local host name of your react app
   case 'localhost' || '127.0.0.1':

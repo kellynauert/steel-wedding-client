@@ -23,7 +23,7 @@ class Home extends Component<any, any> {
       <Grid
         container
         style={{
-          backgroundColor: '#1d0c3b',
+          backgroundColor: 'rgb(37, 14, 44)',
           height: '100vh',
         }}
       >

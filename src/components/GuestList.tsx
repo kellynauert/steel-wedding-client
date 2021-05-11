@@ -7,45 +7,65 @@ import {
   Button,
   DialogActions,
   Tooltip,
+  TextField,
+  Typography,
 } from '@material-ui/core';
-import { DataGrid } from '@material-ui/data-grid';
+import { DataGrid, GridToolbarExport } from '@material-ui/data-grid';
 import CheckCircleOutlineOutlinedIcon from '@material-ui/icons/CheckCircleOutlineOutlined';
 import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import EditGuest from './EditGuest';
-import { Group, Guest } from '../interfaces';
+
+import { Group, Guest, Data } from '../interfaces';
 import APIURL from '../helpers/environment';
+
 import Stats from './Stats';
+var _ = require('lodash');
 
 interface MyState {
-  guests: Guest[] | null;
+  guests: Guest[] | null | undefined;
+  filteredGuests: Guest[] | null | undefined;
   open: boolean;
   groups: Group[];
   openDialog: boolean;
   newGuest: Guest | null;
   role: string;
-  stats: {};
+  stats: Data;
+  search: string[] | null;
+  searchTerm: string;
 }
 
 interface MyProps {
   role: string;
 }
-
+let defaultStats = {
+  attending: 0,
+  both: 0,
+  drinking: 0,
+  invited: 0,
+  invites: 0,
+  notAttending: 0,
+  pescatarian: 0,
+  plusOnes: 0,
+  vegetarian: 0,
+};
 class GuestList extends Component<MyProps, MyState> {
   constructor(props) {
     super(props);
     this.state = {
       guests: [],
+      filteredGuests: [],
       open: false,
       groups: [],
       openDialog: false,
       newGuest: null,
       role: this.props.role,
-      stats: {},
+      stats: defaultStats,
+      search: [],
+      searchTerm: '',
     };
-    console.log(props);
   }
 
   handleOpen = () => {
@@ -55,6 +75,103 @@ class GuestList extends Component<MyProps, MyState> {
   handleClose = () => {
     this.setState({ open: false });
     this.fetchGuestList();
+  };
+
+  handleChange = (e) => {
+    this.setState(
+      {
+        searchTerm: e.target.value,
+      },
+      () => this.searchFunction()
+    );
+  };
+
+  searchFunction = () => {
+    let items = this.state.guests?.sort().filter((guest) => {
+      let found = false;
+      let search =
+        (guest.firstName ? guest.firstName.toLowerCase() : '') +
+        ' ' +
+        (guest.lastName ? guest.lastName.toLowerCase() : '');
+      if (search.includes(this.state.searchTerm.toLowerCase())) {
+        found = true;
+      }
+      return found;
+    });
+
+    this.setState({
+      filteredGuests: items,
+    });
+  };
+
+  CustomToolbar = () => {
+    return (
+      <Box
+        padding={2}
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          borderBottom: '1px solid rgba(224, 224, 224, 1)',
+        }}
+      >
+        <Grid container spacing={4}>
+          <Grid
+            item
+            md={2}
+            spacing={2}
+            style={{ display: 'flex', alignItems: 'center' }}
+          >
+            <TextField
+              fullWidth
+              variant='outlined'
+              placeholder='Search'
+              onChange={_.debounce(this.handleChange, 300)}
+            />
+          </Grid>
+          <Stats data={this.state.stats} />
+
+          <Grid
+            item
+            md={2}
+            style={{
+              display: 'flex',
+              alignContent: 'center',
+              justifyContent: 'flex-end',
+            }}
+          >
+            <GridToolbarExport />
+            <Tooltip
+              arrow
+              placement='right'
+              title={
+                this.props.role === 'Admin'
+                  ? 'Add A Guest'
+                  : 'Only admins may add users'
+              }
+            >
+              <span
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  paddingLeft: '16px',
+                }}
+              >
+                <Button
+                  variant='contained'
+                  color='secondary'
+                  startIcon={<AddIcon />}
+                  disabled={this.props.role !== 'Admin' ? true : false}
+                  onClick={this.createUser}
+                  style={{ height: '36px' }}
+                >
+                  Add Guest
+                </Button>
+              </span>
+            </Tooltip>
+          </Grid>
+        </Grid>
+      </Box>
+    );
   };
   componentDidMount() {
     this.fetchGuestList();
@@ -111,8 +228,10 @@ class GuestList extends Component<MyProps, MyState> {
         .then((guestData) => {
           this.setState({
             guests: guestData,
+            filteredGuests: guestData,
           });
-        });
+        })
+        .then(() => console.log(this.state.guests));
     } else {
       this.handleOpen();
     }
@@ -259,6 +378,7 @@ class GuestList extends Component<MyProps, MyState> {
       {
         field: 'diet',
         headerName: 'Diet',
+        valueGetter: (params) => params.value?.join(),
         flex: 0.5,
         editable: true,
       },
@@ -381,6 +501,7 @@ class GuestList extends Component<MyProps, MyState> {
         field: 'delete',
         headerName: ' ',
         flex: 0.2,
+        align: 'center',
         renderCell: (params) => (
           <Tooltip
             arrow
@@ -391,7 +512,7 @@ class GuestList extends Component<MyProps, MyState> {
                 : 'Only admins may delete users'
             }
           >
-            <span>
+            <span style={{ display: 'flex', justifyContent: 'center' }}>
               <IconButton
                 aria-label='delete'
                 onClick={this.deleteUser(params.id)}
@@ -407,6 +528,7 @@ class GuestList extends Component<MyProps, MyState> {
         field: 'edit',
         headerName: ' ',
         flex: 0.2,
+        align: 'center',
         renderCell: (params) => (
           <IconButton
             aria-label='edit'
@@ -432,8 +554,15 @@ class GuestList extends Component<MyProps, MyState> {
               groups={this.state.groups}
             />
           ) : null}
-          <DialogActions>
-            <Button onClick={this.handleDialogClose} color='primary'>
+          <DialogActions style={{ background: 'rgba(255,255,255,.2)' }}>
+            <Typography variant='subtitle2' style={{ color: 'white' }}>
+              Changes saved automatically
+            </Typography>
+            <Button
+              onClick={this.handleDialogClose}
+              color='primary'
+              variant='contained'
+            >
               Close
             </Button>
           </DialogActions>
@@ -448,46 +577,17 @@ class GuestList extends Component<MyProps, MyState> {
               padding: '16px',
             }}
           >
-            <Box
-              py={2}
-              pt={2}
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Stats data={this.state.stats} />
-              <Tooltip
-                arrow
-                placement='right'
-                title={
-                  this.props.role === 'Admin'
-                    ? 'Add A Guest'
-                    : 'Only admins may add users'
-                }
-              >
-                <span>
-                  <Button
-                    variant='contained'
-                    color='secondary'
-                    startIcon={<AddIcon />}
-                    disabled={this.props.role !== 'Admin' ? true : false}
-                    onClick={this.createUser}
-                  >
-                    Add Guest
-                  </Button>
-                </span>
-              </Tooltip>
-            </Box>
-
             {this.state.guests ? (
               <DataGrid
+                id='datagrid'
                 density='comfortable'
                 // @ts-ignore
                 columns={columns}
                 disableColumnMenu
-                rows={this.state.guests}
+                // @ts-ignore
+                rows={this.state.filteredGuests}
                 onEditCellChangeCommitted={this.handleEditCellChange}
+                components={{ Toolbar: this.CustomToolbar }}
               />
             ) : null}
           </Box>

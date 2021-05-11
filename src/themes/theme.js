@@ -76,6 +76,7 @@ const theme = createMuiTheme({
         ],
       },
     },
+
     MuiCard: {
       root: {
         borderRadius: '16px',
