@@ -34,3 +34,15 @@ export interface Group {
   updatedAt: string;
   guests: Guest[];
 }
+
+export interface Data {
+  attending: number;
+  both: number;
+  drinking: number;
+  invited: number;
+  invites: number;
+  notAttending: number;
+  pescatarian: number;
+  plusOnes: number;
+  vegetarian: number;
+}

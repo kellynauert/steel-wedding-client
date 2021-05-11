@@ -20,6 +20,7 @@ import floretLeft from '../assets/floretleft.svg';
 import GuestComponent from './GuestComponent';
 import { Group, Guest } from '../interfaces';
 import APIURL from '../helpers/environment';
+var _ = require('lodash');
 
 interface MyState {
   groups: Group[];
@@ -30,6 +31,7 @@ interface MyState {
   invite: boolean;
   address: string | null;
   mobile: boolean;
+  addressError: boolean;
 }
 
 interface MyProps {}
@@ -46,6 +48,7 @@ class TarotGuests extends Component<MyProps, MyState> {
       invite: false,
       address: null,
       mobile: false,
+      addressError: false,
     };
   }
 
@@ -151,7 +154,7 @@ class TarotGuests extends Component<MyProps, MyState> {
           onClose={this.handleClose}
           aria-labelledby='form-dialog-title'
         >
-          <DialogContent style={{ backgroundColor: 'purple' }}>
+          <DialogContent className='cardBack'>
             {this.state.open === false ? null : (
               <Grid container spacing={2}>
                 <Grid item xs={12}>
@@ -191,7 +194,7 @@ class TarotGuests extends Component<MyProps, MyState> {
                               fullWidth
                               label='Address'
                               disabled={!this.state.invite}
-                              required
+                              error={this.state.addressError}
                               id='address'
                               defaultValue={this.state.address}
                               variant='outlined'
@@ -216,8 +219,15 @@ class TarotGuests extends Component<MyProps, MyState> {
               </Grid>
             )}
           </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleClose} color='primary'>
+          <DialogActions style={{ background: 'rgba(255,255,255,.2)' }}>
+            <Typography variant='subtitle2' style={{ color: 'white' }}>
+              Changes saved automatically
+            </Typography>
+            <Button
+              onClick={this.handleClose}
+              color='primary'
+              variant='contained'
+            >
               Close
             </Button>
           </DialogActions>
@@ -253,16 +263,18 @@ class TarotGuests extends Component<MyProps, MyState> {
                 padding: '16px',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
+                alignItems: 'center',
               }}
             >
               <Typography variant='body1' align='center'>
-                Search your name
+                Find your name
               </Typography>
 
               <TextField
-                fullWidth
-                placeholder='Search Here'
-                onChange={(e) => this.handleChange(e)}
+                id='searchGuests'
+                style={{ width: '80%' }}
+                placeholder='Search here'
+                onChange={_.debounce(this.handleChange, 300)}
               />
             </Box>
           </Box>

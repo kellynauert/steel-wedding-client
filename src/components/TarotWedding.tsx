@@ -1,12 +1,5 @@
 import React, { Component } from 'react';
-import {
-  Card,
-  CardContent,
-  Grid,
-  Typography,
-  Box,
-  Link,
-} from '@material-ui/core/';
+import { CardContent, Typography, Box, Link } from '@material-ui/core/';
 import image from '../assets/castle.png';
 import bg from '../assets/bg.png';
 

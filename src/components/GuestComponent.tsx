@@ -161,7 +161,7 @@ class GuestComponent extends Component<MyProps, MyState> {
                       <Checkbox
                         defaultChecked={
                           this.state.diet
-                            ? this.state.diet.includes('vegetarian')
+                            ? this.state.diet.includes('Vegetarian')
                             : undefined
                         }
                         onChange={this.handleDietChange}

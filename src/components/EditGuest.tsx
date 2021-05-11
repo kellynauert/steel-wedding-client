@@ -144,7 +144,7 @@ class EditGuest extends Component<MyProps, MyState> {
 
   render() {
     return (
-      <DialogContent style={{ backgroundColor: 'purple' }}>
+      <DialogContent className='cardBack'>
         <Card style={{ borderRadius: '4px' }} id='guestEdit'>
           <CardContent>
             <Grid container spacing={3}>

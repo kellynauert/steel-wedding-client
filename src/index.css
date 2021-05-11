@@ -62,7 +62,7 @@ img {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: black;
+  background-color: rgb(37, 14, 44);
   background-size: contain;
   background-repeat: repeat;
   opacity: 0.7;
@@ -71,4 +71,39 @@ img {
 
 body {
   overflow: hidden;
+}
+.MuiAppBar-colorPrimary {
+  background-color: rgb(26, 4, 32) !important;
+}
+.cardBack {
+  background-image: url(https://img.pngio.com/star-png-images-transparent-free-download-pngmartcom-transparent-stars-background-1680_480.png);
+  background-color: rgb(37, 14, 44);
+}
+
+.MuiInput-underline:after {
+  border-bottom: 2px solid rgb(78, 24, 95) !important;
+  border-radius: 4px;
+}
+
+.MuiInput-root {
+  color: black !important;
+}
+
+#searchGuests {
+  text-align: center;
+  font-size: 24px !important;
+}
+
+.MuiDialogActions-root {
+  border-top: 1px solid rgba(255, 255, 255, 0.37);
+  padding: 8px 24px !important;
+  background-color: rgb(37, 14, 44) !important;
+}
+
+.MuiTypography-colorTextSecondary {
+  color: white;
+}
+.MuiDataGrid-root {
+  opacity: 1 !important;
+  background-color: white;
 }

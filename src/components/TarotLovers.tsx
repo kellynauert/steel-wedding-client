@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, CardContent, Grid, Typography, Box } from '@material-ui/core/';
+import { CardContent, Typography, Box } from '@material-ui/core/';
 import image from '../assets/wedding.png';
 import bg from '../assets/bg.png';
 

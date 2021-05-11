@@ -90,7 +90,6 @@ class App extends Component<MyProps, MyState> {
     this.setState({ isAuthenticated: false, role: '' });
   };
   render() {
-    console.log(this.state.role);
     return (
       <ThemeProvider theme={theme}>
         <CssBaseline />
