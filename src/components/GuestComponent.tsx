@@ -146,9 +146,7 @@ class GuestComponent extends Component<MyProps, MyState> {
                         defaultChecked={this.state.drinking}
                         onChange={this.handleChange}
                         disabled={
-                          this.props.guest.over21
-                            ? !this.props.guest.over21
-                            : undefined
+                          this.props.guest.over21 === false ? true : false
                         }
                       />
                     }
