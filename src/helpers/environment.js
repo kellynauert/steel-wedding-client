@@ -10,7 +10,7 @@ switch (window.location.hostname) {
   // this is the deployed react application, no end slash or https
   case 'steel-wedding.herokuapp.com':
     // this is the full url of your deployed API, no end slash
-    APIURL = 'https://steel-wedding-server.herokuapp.com';
+    APIURL = 'http://www.steel-wedding.com/';
 }
 
 export default APIURL;
