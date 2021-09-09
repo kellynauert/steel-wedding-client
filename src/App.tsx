@@ -1,7 +1,7 @@
 import './App.css';
 import React, { Component } from 'react';
 import { Route, Link, Switch, Redirect } from 'react-router-dom';
-import Home from './components/Home';
+import Home2 from './components/Home2';
 import { ThemeProvider } from '@material-ui/core/styles';
 import {
   CssBaseline,
@@ -13,10 +13,11 @@ import {
 } from '@material-ui/core';
 import theme from './themes/theme';
 import GroupList from './components/GroupList';
-import GuestList from './components/GuestList';
 import Login from './components/Login';
 import GuardedRoute from './components/GuardedRoute';
 import APIURL from './helpers/environment';
+import Rsvp from './components/rsvp';
+import GuestList from './components/GuestList';
 
 interface MyState {
   value: number;
@@ -93,7 +94,8 @@ class App extends Component<MyProps, MyState> {
     return (
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        {this.props.location === '/' ? null : (
+        {this.props.location === '/' ||
+        this.props.location === '/rsvp' ? null : (
           <AppBar position='sticky'>
             <Toolbar
               style={{
@@ -200,7 +202,18 @@ class App extends Component<MyProps, MyState> {
               <Login auth={this.state.isAuthenticated} loginFunc={this.logIn} />
             )}
           />
-          <Route path='/' exact component={Home} />
+          <Route
+            path='/rsvp'
+            exact
+            //@ts-ignore
+            component={Rsvp}
+          />
+          <Route
+            path='/'
+            exact
+            //@ts-ignore
+            component={Home2}
+          />
         </Switch>
       </ThemeProvider>
     );

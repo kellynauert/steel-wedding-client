@@ -3,8 +3,19 @@ import NimbusRoman from './fonts/NimbusRomNo9L-Reg-webfont.woff';
 import NimbusRomanItalic from './fonts/NimbusRomNo9L-RegIta-webfont.woff';
 import NimbusRomanBold from './fonts/NimbusRomNo9L-Med-webfont.woff';
 import NimbusRomanItalicBold from './fonts/NimbusRomNo9L-MedIta-webfont.woff';
+import Notera from './fonts/Notera_PersonalUseOnly.woff';
+
 import pink from '@material-ui/core/colors/pink';
 import indigo from '@material-ui/core/colors/indigo';
+
+const notera = {
+  fontFamily: 'Notera',
+  src: `
+   local('Notera'),
+    local('Notera Personal Use Only'),
+    url(${Notera}) format('woff')
+  `,
+};
 const nimbusRoman = {
   fontFamily: 'Nimbus Roman',
   fontStyle: 'normal',
@@ -73,13 +84,14 @@ const theme = createMuiTheme({
           nimbusRoman,
           nimbusRomanBold,
           nimbusRomanItalicBold,
+          notera,
         ],
       },
     },
 
     MuiCard: {
       root: {
-        borderRadius: '16px',
+        borderRadius: '4px',
       },
     },
     MuiCardContent: {
@@ -121,14 +133,13 @@ const theme = createMuiTheme({
 
     h1: {
       fontSize: '28px !important',
-      fontFamily: ['Nimbus Roman', 'sans-serif'].join(','),
+      fontFamily: ['Nimbus Roman Bold', 'sans-serif'].join(','),
       letterSpacing: '.1em',
       textTransform: 'uppercase',
-
       opacity: '90%',
     },
     h2: {
-      fontSize: '20px !important',
+      fontSize: '22px !important',
       fontWeight: '600',
       letterSpacing: '.1em',
       textTransform: 'uppercase',
@@ -136,8 +147,8 @@ const theme = createMuiTheme({
       fontFamily: ['Nimbus Roman Bold', 'sans-serif'].join(','),
     },
     h3: {
-      fontSize: '18px !important',
-      letterSpacing: '.06em',
+      fontSize: '16px !important',
+      letterSpacing: '.08em',
       textTransform: 'uppercase',
       opacity: '90%',
       fontFamily: ['Nimbus Roman', 'sans-serif'].join(','),
@@ -153,6 +164,13 @@ const theme = createMuiTheme({
       fontWeight: '600',
       letterSpacing: '.03em',
       opacity: '90%',
+    },
+    h6: {
+      fontFamily: ['Notera', 'serif'].join(','),
+      fontSize: '36px !important',
+      // letterSpacing: '.03em',
+      opacity: '90%',
+      lineHeight: '36px',
     },
     subtitle1: {
       fontSize: '16px !important',

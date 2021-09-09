@@ -31,17 +31,17 @@ img {
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #9d70b1;
+  background: #e8cacc;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #602678;
+  background: #b99396;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #361344;
+  background: #c09ea1;
 }
 .card1 {
   position: absolute;
@@ -70,10 +70,14 @@ img {
 }
 
 body {
-  overflow: hidden;
+  background-color: #e8cacc !important;
 }
 .MuiAppBar-colorPrimary {
   background-color: rgb(26, 4, 32) !important;
+}
+.MuiAppBar-colorSecondary {
+  color: black !important;
+  background-color: white !important;
 }
 .cardBack {
   background-image: url(https://img.pngio.com/star-png-images-transparent-free-download-pngmartcom-transparent-stars-background-1680_480.png);

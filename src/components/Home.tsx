@@ -3,7 +3,6 @@ import { Card, Grid } from '@material-ui/core/';
 import TarotWedding from './TarotWedding';
 import TarotLovers from './TarotLovers';
 import TarotGuests from './TarotGuests';
-import ReactCardCarousel from 'react-card-carousel';
 import Background from './Background';
 class Home extends Component<any, any> {
   constructor(props) {
@@ -27,23 +26,21 @@ class Home extends Component<any, any> {
           height: '100vh',
         }}
       >
-        <Background />
-        <ReactCardCarousel spread='wide' style={{ cursor: 'pointer' }}>
-          <Card elevation={12} style={{ width: this.state.width }}>
-            <TarotLovers />
-          </Card>
-          <Card elevation={12} style={{ width: this.state.width }}>
-            <TarotWedding />
-          </Card>
-          <Card
-            elevation={12}
-            style={{
-              width: this.state.width,
-            }}
-          >
-            <TarotGuests />
-          </Card>
-        </ReactCardCarousel>
+        {/* <Background /> */}
+        <Card elevation={12} style={{ width: this.state.width }}>
+          <TarotLovers />
+        </Card>
+        <Card elevation={12} style={{ width: this.state.width }}>
+          <TarotWedding />
+        </Card>
+        <Card
+          elevation={12}
+          style={{
+            width: this.state.width,
+          }}
+        >
+          <TarotGuests />
+        </Card>
       </Grid>
     );
   }
