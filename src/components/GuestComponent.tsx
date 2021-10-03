@@ -1,45 +1,70 @@
-import React, { Component } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+//@ts-nocheck
+import React, { useEffect, useState } from 'react';
 import {
   Card,
   CardContent,
   Grid,
   Typography,
   FormControlLabel,
-  Checkbox,
+  Divider,
   Radio,
   RadioGroup,
 } from '@material-ui/core/';
 import PlusOne from './PlusOne';
-import { Guest } from '../interfaces';
 import APIURL from '../helpers/environment';
 
-interface MyState {
-  attending: boolean | null;
-  drinking: any;
-  diet: string[] | null;
-}
-interface MyProps {
-  guest: Guest;
-  fetchGroupList: () => void;
-  groupId: number;
-}
-class GuestComponent extends Component<MyProps, MyState> {
-  constructor(props) {
-    super(props);
-    this.state = {
-      attending: this.props.guest.attending,
-      drinking: this.props.guest.drinking,
-      diet: this.props.guest.diet ? this.props.guest.diet : [],
-    };
-  }
+const GuestComponent = ({ guestId }) => {
+  const [guest, setGuest] = useState({});
+  const [attending, setAttending] = useState(false);
+  const [diet, setDiet] = useState('');
+  const [plusOneId, setPlusOneId] = useState(null);
 
-  saveGuest = () => {
-    fetch(`${APIURL}/guest/${this.props.guest.id}`, {
+  const saveGuest = () => {
+    fetch(`${APIURL}/guest/${guestId}`, {
       method: 'PUT',
       body: JSON.stringify({
-        attending: this.state.attending,
-        drinking: this.state.drinking,
-        diet: this.state.diet,
+        attending: attending,
+        diet: [diet],
+      }),
+      headers: new Headers({
+        'Content-Type': 'application/json',
+      }),
+    }).then((res) => res.json());
+  };
+  const fetchGuest = () => {
+    fetch(`${APIURL}/guest/${guestId}`, {
+      method: 'GET',
+      headers: new Headers({
+        'Content-Type': 'application/json',
+      }),
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        setGuest(json);
+        setAttending(json.attending);
+        setDiet(json.diet[0]);
+        setPlusOneId(json.plusOneId);
+      });
+  };
+  useEffect(() => fetchGuest(), [guestId]);
+  useEffect(() => {
+    if (attending === false) {
+      setDiet('');
+      if (guest.plusOneId) {
+        deletePlusOne();
+      }
+    }
+    saveGuest();
+  }, [attending, diet]);
+
+  const handleAttendingChange = (e) => setAttending(JSON.parse(e.target.value));
+  const handleDietChange = (e) => setDiet(e.target.value);
+  const deletePlusOne = () => {
+    fetch(`${APIURL}/guest/${guestId}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        plusOneId: null,
       }),
       headers: new Headers({
         'Content-Type': 'application/json',
@@ -47,171 +72,95 @@ class GuestComponent extends Component<MyProps, MyState> {
     })
       .then((res) => res.json())
       .then(() => {
-        this.props.fetchGroupList();
-      })
-      .then(() => {
-        this.forceUpdate();
+        fetchGuest();
       });
-  };
 
-  handleAttendingChange = (e) => {
-    if (e.target.value === 'true') {
-      this.setState({ drinking: null, diet: [] });
-      if (this.props.guest.plusone) {
-        fetch(`${APIURL}/plusone/${this.props.guest.plusone.id}`, {
-          method: 'DELETE',
-          headers: new Headers({
-            'Content-Type': 'application/json',
-          }),
-        }).then(() => {
-          this.props.fetchGroupList();
-        });
-      }
-    }
-    this.setState({ attending: JSON.parse(e.target.value) }, () => {
-      this.saveGuest();
-    });
+    fetch(`${APIURL}/plusone/${plusOneId}`, {
+      method: 'DELETE',
+      headers: new Headers({
+        'Content-Type': 'application/json',
+      }),
+    }).then(() => setPlusOneId(null));
   };
+  return (
+    <Grid item xs={12}>
+      <Card style={{ borderRadius: '4px' }}>
+        <CardContent>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Typography variant='h2'>
+                {guest?.firstName} {guest?.lastName}
+              </Typography>
+            </Grid>
+            <Grid item xs>
+              <RadioGroup
+                name='attending'
+                style={{ display: 'flex', flexDirection: 'row' }}
+                onChange={handleAttendingChange}
+                value={attending}
+              >
+                <FormControlLabel
+                  value={true}
+                  control={<Radio />}
+                  label='Attending'
+                  style={{ width: '40%' }}
+                />
+                <FormControlLabel
+                  value={false}
+                  control={<Radio />}
+                  label='Not Attending'
+                />
+              </RadioGroup>
+            </Grid>
+          </Grid>
 
-  handleChange = (e) => {
-    this.setState({ drinking: e.target.checked }, () => {
-      this.saveGuest();
-    });
-  };
-
-  handleDietChange = (e) => {
-    if (this.state.diet) {
-      if (e.target.checked) {
-        this.setState({ diet: [...this.state.diet, e.target.name] }, () => {
-          this.saveGuest();
-        });
-      } else {
-        let index = this.state.diet.indexOf(e.target.name);
-        this.setState(
-          {
-            diet: this.state.diet.filter((_, i) => i !== index),
-          },
-          () => {
-            this.saveGuest();
-          }
-        );
-      }
-    }
-  };
-
-  render() {
-    return (
-      <Grid item xs={12}>
-        <Card style={{ borderRadius: '4px' }}>
-          <CardContent>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <Typography variant='h2'>
-                  {this.props.guest.firstName} {this.props.guest.lastName}
-                </Typography>
-              </Grid>
-              <Grid item xs={12}>
+          {attending ? (
+            <Grid container item xs={12}>
+              <Divider />
+              <Grid item xs>
                 <RadioGroup
-                  name='attending'
+                  name='diet'
                   style={{ display: 'flex', flexDirection: 'row' }}
-                  onChange={this.handleAttendingChange}
-                  defaultValue={
-                    this.props.guest.attending === null
-                      ? undefined
-                      : this.props.guest.attending.toString()
-                  }
+                  onChange={handleDietChange}
+                  value={diet}
                 >
                   <FormControlLabel
-                    value='true'
+                    value={'Meat'}
                     control={<Radio />}
-                    label='Attending'
-                    style={{ width: '33%' }}
+                    label='Beef Stew'
+                    style={{ width: '40%' }}
                   />
                   <FormControlLabel
-                    value='false'
+                    value={'Vegetarian'}
                     control={<Radio />}
-                    label='Not Attending'
+                    label='Veggie Stew'
                   />
                 </RadioGroup>
               </Grid>
+
+              <>
+                <hr
+                  style={{
+                    margin: '16px 0',
+                    borderStyle: 'dashed',
+                    borderWidth: 'thin',
+                    opacity: '50%',
+                    width: '100%',
+                  }}
+                />
+                <PlusOne
+                  fetchGuest={fetchGuest}
+                  guest={guest}
+                  plusOneId={plusOneId}
+                  setPlusOneId={setPlusOneId}
+                  deletePlusOne={deletePlusOne}
+                />
+              </>
             </Grid>
-
-            {this.state.attending ? (
-              <Grid container item xs={12}>
-                <Grid item xs={12}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        name='drinking'
-                        defaultChecked={this.state.drinking}
-                        onChange={this.handleChange}
-                        disabled={
-                          this.props.guest.over21 === false ? true : false
-                        }
-                      />
-                    }
-                    label='21+ and drinking'
-                  />
-                </Grid>
-                <Grid item xs={4}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        defaultChecked={
-                          this.state.diet
-                            ? this.state.diet.includes('Vegetarian')
-                            : undefined
-                        }
-                        onChange={this.handleDietChange}
-                        name='Vegetarian'
-                      />
-                    }
-                    label='Vegetarian'
-                  />
-                </Grid>
-                <Grid item xs={4}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        defaultChecked={
-                          this.state.diet
-                            ? this.state.diet.includes('Pescatarian')
-                            : undefined
-                        }
-                        onChange={this.handleDietChange}
-                        name='Pescatarian'
-                      />
-                    }
-                    label='Pescatarian'
-                  />
-                </Grid>
-
-                <>
-                  <hr
-                    style={{
-                      margin: '16px 0',
-                      borderStyle: 'dashed',
-                      borderWidth: 'thin',
-                      opacity: '50%',
-                      width: '100%',
-                    }}
-                  />
-                  <PlusOne
-                    key={
-                      this.props.guest.plusone
-                        ? this.props.guest.plusone.id
-                        : null
-                    }
-                    fetchGroupList={this.props.fetchGroupList}
-                    guest={this.props.guest}
-                  />
-                </>
-              </Grid>
-            ) : null}
-          </CardContent>
-        </Card>
-      </Grid>
-    );
-  }
-}
+          ) : null}
+        </CardContent>
+      </Card>
+    </Grid>
+  );
+};
 export default GuestComponent;

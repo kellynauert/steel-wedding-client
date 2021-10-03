@@ -554,7 +554,7 @@ class GuestList extends Component<MyProps, MyState> {
               groups={this.state.groups}
             />
           ) : null}
-          <DialogActions style={{ background: 'rgba(255,255,255,.2)' }}>
+          <DialogActions>
             <Typography variant='subtitle2' style={{ color: 'white' }}>
               Changes saved automatically
             </Typography>

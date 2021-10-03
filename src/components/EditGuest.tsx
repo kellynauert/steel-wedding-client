@@ -367,13 +367,11 @@ class EditGuest extends Component<MyProps, MyState> {
                         }}
                       />
                       <PlusOne
-                        key={
-                          this.props.guest.plusone
-                            ? this.props.guest.plusone.id
-                            : null
-                        }
-                        fetchGroupList={this.props.fetchGuestList}
+                        fetchGuest={this.props.fetchGuestList}
                         guest={this.state.guest}
+                        plusOneId={this.state.guest.plusOneId}
+                        setPlusOneId={null}
+                        deletePlusOne={null}
                       />
                     </Grid>
                   ) : null}

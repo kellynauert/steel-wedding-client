@@ -1,5 +1,5 @@
 import './App.css';
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Route, Link, Switch, Redirect } from 'react-router-dom';
 import Home2 from './components/Home2';
 import { ThemeProvider } from '@material-ui/core/styles';
@@ -19,39 +19,34 @@ import APIURL from './helpers/environment';
 import Rsvp from './components/rsvp';
 import GuestList from './components/GuestList';
 
-interface MyState {
-  value: number;
-  open: boolean;
-  isAuthenticated: boolean;
-  username: string;
-  path: string;
-  location: string;
-  role: string;
-}
+// interface MyState {
+//   value: number;
+//   open: boolean;
+//   isAuthenticated: boolean;
+//   username: string;
+//   path: string;
+//   location: string;
+//   role: string;
+// }
 
 interface MyProps {
   location: string;
 }
 
-class App extends Component<MyProps, MyState> {
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: 0,
-      open: false,
-      isAuthenticated: false,
-      username: '',
-      path: '/guests',
-      location: '',
-      role: '',
-    };
-  }
-  componentDidMount() {
-    this.getRole();
-  }
-  getRole = () => {
+const App = (props: MyProps) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [username, setUsername] = useState('');
+  const [path, setPath] = useState('/guests');
+  const [location, setLocation] = useState('');
+  const [role, setRole] = useState('');
+
+  useEffect(() => {
+    getRole();
+  }, []);
+
+  const getRole = () => {
     if (localStorage.getItem('token')) {
-      this.setState({ isAuthenticated: true });
+      setIsAuthenticated(true);
 
       fetch(`${APIURL}/user/role`, {
         method: 'GET',
@@ -62,162 +57,153 @@ class App extends Component<MyProps, MyState> {
       })
         .then((response) => response.json())
         .then((res) => {
-          this.setState({
-            role: res.role,
-            username: res.username,
-          });
+          setRole(res.role);
+          setUsername(res.username);
         });
     }
   };
-  setPath = (path) => () => this.setState({ path: path });
+  const logIn = () => {
+    getRole();
+    setIsAuthenticated(true);
 
-  logIn = () => {
-    this.getRole();
-    this.setState({ isAuthenticated: true }, () => {
-      return (
-        <Redirect
-          to={{
-            pathname: this.state.path,
-            state: { role: this.state.role },
-          }}
-          from='/login'
-        />
-      );
-    });
+    // <Redirect
+    //   to={{
+    //     pathname:path,
+    //     state: { role:role },
+    //   }}
+    //   from='/login'
+    // />
   };
 
-  handleLogOut = () => {
+  const handleLogOut = () => {
     localStorage.clear();
-    this.setState({ isAuthenticated: false, role: '' });
+    setIsAuthenticated(false);
+    setRole('');
   };
-  render() {
-    return (
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        {this.props.location === '/' ||
-        this.props.location === '/rsvp' ? null : (
-          <AppBar position='sticky'>
-            <Toolbar
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                width: '100%',
-              }}
-            >
-              <Box style={{ display: 'flex' }}>
-                <Link
-                  to='/'
-                  style={{
-                    textDecoration: 'none',
-                  }}
-                >
-                  <Typography
-                    variant='subtitle1'
-                    style={{
-                      color: 'white',
-                      marginRight: '32px',
-                    }}
-                  >
-                    Home
-                  </Typography>
-                </Link>
-                <Link
-                  to='/guests'
-                  style={{
-                    textDecoration: 'none',
-                  }}
-                >
-                  <Typography
-                    variant='subtitle1'
-                    style={{
-                      color: 'white',
-                      marginRight: '32px',
-                    }}
-                  >
-                    Guests
-                  </Typography>
-                </Link>
-                <Link
-                  to='/groups'
-                  style={{
-                    textDecoration: 'none',
-                  }}
-                >
-                  <Typography
-                    variant='subtitle1'
-                    style={{
-                      color: 'white',
-                      marginRight: '32px',
-                    }}
-                  >
-                    Groups
-                  </Typography>
-                </Link>
-              </Box>
-              <Box>
-                {this.state.isAuthenticated ? (
-                  <Button onClick={this.handleLogOut}>
-                    <Typography
-                      variant='body1'
-                      style={{
-                        color: 'white',
-                        marginRight: '8px',
-                      }}
-                    >
-                      {this.state.username}
-                    </Typography>
-                    <Typography
-                      variant='subtitle1'
-                      style={{
-                        color: 'white',
-                      }}
-                    >
-                      (Logout)
-                    </Typography>
-                  </Button>
-                ) : null}
-              </Box>
-            </Toolbar>
-          </AppBar>
-        )}
 
-        <Switch>
-          <GuardedRoute
-            path='/guests'
-            component={GuestList}
-            auth={this.state.isAuthenticated}
-            setPath={this.setPath}
-            role={this.state.role}
-          />
-          <GuardedRoute
-            path='/groups'
-            component={GroupList}
-            auth={this.state.isAuthenticated}
-            setPath={this.setPath}
-            role={this.state.role}
-          />
-          <Route
-            path='/login'
-            render={() => (
-              <Login auth={this.state.isAuthenticated} loginFunc={this.logIn} />
-            )}
-          />
-          <Route
-            path='/rsvp'
-            exact
-            //@ts-ignore
-            component={Rsvp}
-          />
-          <Route
-            path='/'
-            exact
-            //@ts-ignore
-            component={Home2}
-          />
-        </Switch>
-      </ThemeProvider>
-    );
-  }
-}
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      {location === '/guests' || props.location === '/groups' ? (
+        <AppBar position='sticky'>
+          <Toolbar
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              width: '100%',
+            }}
+          >
+            <Box style={{ display: 'flex' }}>
+              <Link
+                to='/'
+                style={{
+                  textDecoration: 'none',
+                }}
+              >
+                <Typography
+                  variant='subtitle1'
+                  style={{
+                    color: 'white',
+                    marginRight: '32px',
+                  }}
+                >
+                  Home
+                </Typography>
+              </Link>
+              <Link
+                to='/guests'
+                style={{
+                  textDecoration: 'none',
+                }}
+              >
+                <Typography
+                  variant='subtitle1'
+                  style={{
+                    color: 'white',
+                    marginRight: '32px',
+                  }}
+                >
+                  Guests
+                </Typography>
+              </Link>
+              <Link
+                to='/groups'
+                style={{
+                  textDecoration: 'none',
+                }}
+              >
+                <Typography
+                  variant='subtitle1'
+                  style={{
+                    color: 'white',
+                    marginRight: '32px',
+                  }}
+                >
+                  Groups
+                </Typography>
+              </Link>
+            </Box>
+            <Box>
+              {isAuthenticated ? (
+                <Button onClick={handleLogOut}>
+                  <Typography
+                    variant='body1'
+                    style={{
+                      color: 'white',
+                      marginRight: '8px',
+                    }}
+                  >
+                    {username}
+                  </Typography>
+                  <Typography
+                    variant='subtitle1'
+                    style={{
+                      color: 'white',
+                    }}
+                  >
+                    (Logout)
+                  </Typography>
+                </Button>
+              ) : null}
+            </Box>
+          </Toolbar>
+        </AppBar>
+      ) : null}
+
+      <Switch>
+        <GuardedRoute
+          path='/guests'
+          component={GuestList}
+          auth={isAuthenticated}
+          setPath={setPath}
+          role={role}
+        />
+        <GuardedRoute
+          path='/groups'
+          component={GroupList}
+          auth={isAuthenticated}
+          setPath={setPath}
+          role={role}
+        />
+        <Route
+          path='/login'
+          render={() => <Login auth={isAuthenticated} loginFunc={logIn} />}
+        />
+        <Route
+          path='/rsvp'
+          exact
+          //@ts-ignore
+          component={Rsvp}
+        />
+        <Route
+          path='/'
+          exact
+          //@ts-ignore
+          component={Home2}
+        />
+      </Switch>
+    </ThemeProvider>
+  );
+};
 
 export default App;

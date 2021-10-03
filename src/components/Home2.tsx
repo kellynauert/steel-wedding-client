@@ -1,23 +1,11 @@
 //@ts-nocheck
 import React, { Component, useState } from 'react';
-import {
-  Card,
-  Grid,
-  Typography,
-  CardContent,
-  Link,
-  Box,
-  BottomNavigation,
-  BottomNavigationAction,
-} from '@material-ui/core/';
+import { Card, Grid, Typography, CardContent, Box } from '@material-ui/core/';
 import image from '../assets/flowers.svg';
-import label from '../assets/label.png';
-import sign from '../assets/sign.svg';
-import gifts from '../assets/gifts.svg';
-import info from '../assets/info.svg';
 
+import { Link } from 'react-router-dom';
+import BottomNav from './BottomNav';
 const Home2 = () => {
-  const [value, setValue] = useState('');
   let wedding = new Date('05/28/2022');
   let daysLeft = Math.round(
     (wedding.getTime() - Date.now()) / (1000 * 3600 * 24)
@@ -66,31 +54,7 @@ const Home2 = () => {
           </Grid>
         </Grid>
       </Box>
-      <BottomNavigation
-        style={{ position: 'fixed', bottom: 0, width: '100%' }}
-        value={value}
-        onChange={(event, newValue) => {
-          setValue(newValue);
-        }}
-        showLabels
-      >
-        <BottomNavigationAction
-          component={Link}
-          to='/rsvp'
-          label='RSVP'
-          icon={<img src={sign} height='24px' />}
-        />
-        <BottomNavigationAction
-          label='Info'
-          icon={<img src={info} height='24px' />}
-        />
-        <BottomNavigationAction
-          // component={Link}
-          // to='/signal'
-          label='Gifts'
-          icon={<img src={gifts} height='24px' />}
-        />
-      </BottomNavigation>
+      <BottomNav />
     </>
   );
 };
