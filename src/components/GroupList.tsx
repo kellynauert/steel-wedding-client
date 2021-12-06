@@ -63,8 +63,6 @@ class GroupList extends Component<MyProps, MyState> {
       method: 'POST',
       body: JSON.stringify({
         groupName: null,
-        address: null,
-        phone: null,
       }),
       headers: new Headers({
         'Content-Type': 'application/json',
@@ -91,7 +89,6 @@ class GroupList extends Component<MyProps, MyState> {
       let search =
         (group.groupName ? group.groupName.toLowerCase() : '') +
         ' ' +
-        (group.address ? group.address.toLowerCase() : '') +
         (group.guests
           ? group.guests
               ?.map(
@@ -102,7 +99,6 @@ class GroupList extends Component<MyProps, MyState> {
               )
               .join(' ')
           : '');
-      console.log(search);
       if (search.includes(this.state.searchTerm.toLowerCase())) {
         found = true;
       }
@@ -267,19 +263,6 @@ class GroupList extends Component<MyProps, MyState> {
       },
 
       {
-        field: 'address',
-        headerName: 'Address',
-        flex: 1,
-        editable: true,
-        valueGetter: (params) => params.value?.toString(),
-      },
-      {
-        field: 'phone',
-        headerName: 'Phone',
-        flex: 0.5,
-        editable: true,
-      },
-      {
         field: 'members',
         headerName: 'Members',
         valueGetter: (params) =>
@@ -287,6 +270,12 @@ class GroupList extends Component<MyProps, MyState> {
             ?.map((item) => item.firstName + ' ' + item.lastName)
             .join(', '),
         flex: 1,
+      },
+      {
+        field: 'children',
+        headerName: 'Children',
+
+        flex: 0.5,
       },
       {
         field: 'delete',
@@ -339,55 +328,59 @@ class GroupList extends Component<MyProps, MyState> {
 
     return (
       <Grid container>
-        <Dialog
-          open={this.state.openDialog}
-          onClose={this.handleDialogClose}
-          aria-labelledby='form-dialog-title'
-        >
-          {this.state.group ? (
-            <EditGroup
-              group={this.state.group}
-              fetchGroupList={this.fetchGroupList}
-              groups={this.state.groups}
-            />
-          ) : null}
-          <DialogActions>
-            <Typography variant='subtitle2' style={{ color: 'white' }}>
-              Changes saved automatically
-            </Typography>
-            <Button
-              onClick={this.handleDialogClose}
-              color='primary'
-              variant='contained'
-            >
-              Close
-            </Button>
-          </DialogActions>
-        </Dialog>
-        <Grid item xs={12}>
-          <Box
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              width: '100%',
-              height: '90vh',
-              padding: '16px',
-            }}
+        <Grid item xs></Grid>
+        <Grid item container md={6}>
+          <Dialog
+            open={this.state.openDialog}
+            onClose={this.handleDialogClose}
+            aria-labelledby='form-dialog-title'
           >
-            {this.state.groups ? (
-              <DataGrid
-                density='comfortable'
-                //@ts-ignore
-                columns={columns}
-                //@ts-ignore
-                rows={this.state.filteredGroups}
-                onEditCellChangeCommitted={this.handleEditCellChange}
-                components={{ Toolbar: this.CustomToolbar }}
-                disableColumnMenu
+            {this.state.group ? (
+              <EditGroup
+                group={this.state.group}
+                fetchGroupList={this.fetchGroupList}
+                groups={this.state.groups}
               />
             ) : null}
-          </Box>
+            <DialogActions>
+              <Typography variant='subtitle2' style={{ color: 'white' }}>
+                Changes saved automatically
+              </Typography>
+              <Button
+                onClick={this.handleDialogClose}
+                color='primary'
+                variant='contained'
+              >
+                Close
+              </Button>
+            </DialogActions>
+          </Dialog>
+          <Grid item xs={12}>
+            <Box
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                width: '100%',
+                height: '90vh',
+                padding: '16px',
+              }}
+            >
+              {this.state.groups ? (
+                <DataGrid
+                  density='comfortable'
+                  //@ts-ignore
+                  columns={columns}
+                  //@ts-ignore
+                  rows={this.state.filteredGroups}
+                  onEditCellChangeCommitted={this.handleEditCellChange}
+                  components={{ Toolbar: this.CustomToolbar }}
+                  disableColumnMenu
+                />
+              ) : null}
+            </Box>
+          </Grid>
         </Grid>
+        <Grid item xs></Grid>
       </Grid>
     );
   }

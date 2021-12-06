@@ -7,6 +7,7 @@ import {
   IconButton,
   Button,
   DialogActions,
+  Tooltip,
   TextField,
   Typography,
 } from '@material-ui/core';
@@ -16,85 +17,134 @@ import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
-import EditGuest from './EditGuest';
-import APIURL from '../helpers/environment';
-import Stats from './Stats';
+import EditGuest from './src/components/EditGuest';
+import APIURL from './src/helpers/environment';
+import Stats from './src/components/Stats';
+import { useWhatChanged } from '@simbathesailor/use-what-changed';
 
 var _ = require('lodash');
 
 const GuestList = () => {
   const [guests, setGuests] = useState([]);
   const [filteredGuests, setFilteredGuests] = useState([]);
+  const [open, setOpen] = useState(false);
   const [groups, setGroups] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [newGuest, setNewGuest] = useState(null);
+  const [role, setRole] = useState(undefined);
   const [stats, setStats] = useState('');
+  const [search, setSearch] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
-  useEffect(() => console.log(guests), [guests]);
   useEffect(() => {
     fetchGuestList();
     fetchGroups();
     fetchStats();
   }, []);
 
+  let deps = [
+    guests,
+    filteredGuests,
+    open,
+    groups,
+    openDialog,
+    newGuest,
+    role,
+    stats,
+    search,
+    searchTerm,
+  ];
+
+  useWhatChanged(
+    deps,
+    'guests,filteredGuests,open,groups,openDialog,newGuest,role,stats,search,searchTerm,'
+  );
+  useEffect(() => {
+    console.log(searchTerm);
+  }, deps);
+
   useEffect(() => {
     let items = guests?.sort().filter((guest) => {
+      let found = false;
       let search =
         (guest.firstName ? guest.firstName.toLowerCase() : '') +
         ' ' +
         (guest.lastName ? guest.lastName.toLowerCase() : '');
-
-      return search.includes(searchTerm.toLowerCase());
+      if (search.includes(searchTerm.toLowerCase())) {
+        found = true;
+      }
+      return found;
     });
     setFilteredGuests(items);
   }, [searchTerm, guests]);
 
   const CustomToolbar = () => {
     return (
-      <Grid
-        container
-        alignItems='center'
+      <Box
+        padding={2}
         style={{
-          padding: '12px',
-          borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          borderBottom: '1px solid rgba(224, 224, 224, 1)',
         }}
       >
-        <Grid
-          item
-          container
-          xs={12}
-          style={{
-            marginBottom: '24px',
-          }}
-        >
-          <Stats data={stats} />
-        </Grid>
-        <Grid item xs={6} md={3}>
-          <TextField
-            fullWidth
-            variant='outlined'
-            key='search'
-            placeholder='Search'
-            onChange={_.debounce((e) => setSearchTerm(e.target.value), 300)}
-          />
-        </Grid>
-        <Grid item xs>
-          <GridToolbarExport />
-        </Grid>
-        <Grid item xs={6} md={3}>
-          <Button
-            fullWidth
-            variant='contained'
-            color='secondary'
-            style={{ whiteSpace: 'nowrap' }}
-            startIcon={<AddIcon />}
-            onClick={createUser}
+        <Grid container spacing={4}>
+          <Grid
+            item
+            md={2}
+            spacing={2}
+            style={{ display: 'flex', alignItems: 'center' }}
           >
-            Add Guest
-          </Button>
+            <TextField
+              fullWidth
+              size='small'
+              variant='outlined'
+              key='search'
+              placeholder='Search your name here'
+              onChange={_.debounce((e) => setSearchTerm(e.target.value), 300)}
+            />
+          </Grid>
+          <Stats data={stats} />
+
+          <Grid
+            item
+            md={2}
+            style={{
+              display: 'flex',
+              alignContent: 'center',
+              justifyContent: 'flex-end',
+            }}
+          >
+            <GridToolbarExport />
+            <Tooltip
+              arrow
+              placement='right'
+              title={
+                role === 'Admin' ? 'Add A Guest' : 'Only admins may add users'
+              }
+            >
+              <span
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  paddingLeft: '16px',
+                }}
+              >
+                <Button
+                  variant='contained'
+                  color='secondary'
+                  startIcon={<AddIcon />}
+                  disabled={role !== 'Admin' ? true : false}
+                  onClick={createUser}
+                  style={{ height: '36px' }}
+                >
+                  Add Guest
+                </Button>
+              </span>
+            </Tooltip>
+          </Grid>
         </Grid>
-      </Grid>
+      </Box>
     );
   };
 
@@ -110,6 +160,13 @@ const GuestList = () => {
       .then((json) => setStats(json));
   };
 
+  const handleErrors = (response) => {
+    if (response.message === 'Not Authorized') {
+      setOpen(true);
+    } else {
+      return response;
+    }
+  };
   const fetchGroups = () => {
     fetch(`${APIURL}/group/names`, {
       method: 'GET',
@@ -119,22 +176,14 @@ const GuestList = () => {
       }),
     })
       .then((response) => response.json())
+      .then((response) => handleErrors(response))
       .then((groupData) => {
         setGroups(groupData);
       });
   };
-
-  const fetchGuestList = async () => {
+  const fetchGuestList = () => {
     if (localStorage.token) {
-      let thisData = await fetch(`${APIURL}/guest/master/`, {
-        method: 'GET',
-        headers: new Headers({
-          'Content-Type': 'application/json',
-          Authorization: localStorage.token,
-        }),
-      }).then((response) => response.json());
-
-      fetch(`${APIURL}/plusone/`, {
+      fetch(`${APIURL}/guest/master/`, {
         method: 'GET',
         headers: new Headers({
           'Content-Type': 'application/json',
@@ -142,19 +191,13 @@ const GuestList = () => {
         }),
       })
         .then((response) => response.json())
+        .then((response) => handleErrors(response))
         .then((guestData) => {
-          let allData = thisData;
-          for (let guest of guestData) {
-            let data = guest;
-            data.id = `plusOne-${guest.id}`;
-            data.attending = true;
-            data.plusOneAllowed = false;
-            data.over21 = null;
-            allData.push(data);
-          }
-          console.log(allData, guests);
-          setGuests(allData);
+          setGuests(guestData);
+          // setFilteredGuests(guestData);
         });
+    } else {
+      setOpen(true);
     }
   };
 
@@ -211,7 +254,7 @@ const GuestList = () => {
           Authorization: localStorage.token,
         }),
       }).then((res) => res.json());
-    } else if (e.field === 'vegetarian') {
+    } else if (e.field === 'diet' && typeof e.props.value === 'string') {
       fetch(`${APIURL}/guest/master/${e.id}`, {
         method: 'PUT',
         body: JSON.stringify({
@@ -237,8 +280,9 @@ const GuestList = () => {
   };
 
   const handleDialogClose = () => {
-    setOpenDialog(false);
+    seOpenDialog(false);
     fetchGuestList();
+    forceUpdate();
   };
 
   let columns = [
@@ -252,9 +296,8 @@ const GuestList = () => {
     {
       field: 'groupId',
       headerName: 'Group',
-      valueGetter: (params) =>
-        params.row.guest ? 'Plus One' : groups[params.value],
-      flex: 0.5,
+      valueGetter: (params) => groups[params.value],
+      flex: 1,
       editable: true,
     },
     {
@@ -291,40 +334,15 @@ const GuestList = () => {
         ),
     },
     {
-      field: 'vegetarian',
-      headerName: 'Vegetarian',
-      valueGetter: (params) => params.value,
+      field: 'diet',
+      headerName: 'Diet',
+      valueGetter: (params) => params.value?.join(),
       flex: 0.5,
-      headerAlign: 'center',
-      align: 'center',
-      renderCell: (params) =>
-        params.value === null ||
-        params.value.toString() === '' ? null : params.value.toString() ===
-          'true' ? (
-          <Box
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              width: '100%',
-            }}
-          >
-            <CheckCircleOutlineOutlinedIcon style={{ color: '#00a152' }} />
-          </Box>
-        ) : (
-          <Box
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              width: '100%',
-            }}
-          >
-            <CancelOutlinedIcon style={{ color: '#f44336' }} />
-          </Box>
-        ),
+      editable: true,
     },
     {
       field: 'over21',
-      headerName: 'Over 21',
+      headerName: 'Over21',
       flex: 0.5,
       editable: true,
       headerAlign: 'center',
@@ -389,30 +407,21 @@ const GuestList = () => {
         ),
     },
     {
-      field: 'drinks',
-      headerName: 'Drinks',
+      field: 'plusone',
+      headerName: 'Plus one',
       flex: 0.5,
-      headerAlign: 'center',
-      align: 'center',
       editable: true,
-      valueGetter: (params) => {
-        let drinks = [];
-        if (params.row.mead === true) {
-          drinks.push('Mead');
-        }
-        if (params.row.wine === true) {
-          drinks.push('Wine');
-        }
-        if (params.row.beer === true) {
-          drinks.push('Beer');
-        }
-        if (params.row.cider === true) {
-          drinks.push('Cider');
-        }
-        return drinks;
-      },
+      valueGetter: (params) =>
+        params.row.plusone
+          ? !params.row.plusone.firstName && !params.row.plusone.lastName
+            ? 'Unknown'
+            : params.row.plusone.firstName
+            ? params.row.plusone.firstName
+            : null + ' ' + params.row.plusone.lastName
+            ? params.row.plusone.lastName
+            : null
+          : null,
     },
-
     {
       field: 'plusOneAllowed',
       headerName: 'Plus one allowed',
@@ -447,38 +456,28 @@ const GuestList = () => {
         ),
     },
     {
-      field: 'plusone',
-      headerName: 'Associated With',
-      flex: 0.5,
-      editable: true,
-      valueGetter: (params) =>
-        params.row.plusone
-          ? !params.row.plusone.firstName && !params.row.plusone.lastName
-            ? 'Unknown'
-            : params.row.plusone.firstName
-            ? params.row.plusone.firstName
-            : null + ' ' + params.row.plusone.lastName
-            ? params.row.plusone.lastName
-            : null
-          : params.row.guest
-          ? !params.row.guest.firstName && !params.row.guest.lastName
-            ? 'Unknown'
-            : params.row.guest.firstName
-            ? params.row.guest.firstName
-            : null + ' ' + params.row.guest.lastName
-            ? params.row.guest.lastName
-            : null
-          : null,
-    },
-    {
       field: 'delete',
       headerName: ' ',
       flex: 0.2,
       align: 'center',
       renderCell: (params) => (
-        <IconButton aria-label='delete' onClick={deleteUser(params.id)}>
-          <DeleteIcon />
-        </IconButton>
+        <Tooltip
+          arrow
+          placement='left'
+          title={
+            role === 'Admin' ? 'Delete Guest' : 'Only admins may delete users'
+          }
+        >
+          <span style={{ display: 'flex', justifyContent: 'center' }}>
+            <IconButton
+              aria-label='delete'
+              onClick={deleteUser(params.id)}
+              disabled={role !== 'Admin' ? true : false}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </span>
+        </Tooltip>
       ),
     },
     {

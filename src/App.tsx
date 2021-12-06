@@ -1,7 +1,7 @@
 import './App.css';
 import React, { useState, useEffect } from 'react';
 import { Route, Link, Switch, Redirect } from 'react-router-dom';
-import Home2 from './components/Home2';
+import Home from './components/ConvertedComponents/Home';
 import { ThemeProvider } from '@material-ui/core/styles';
 import {
   CssBaseline,
@@ -16,28 +16,14 @@ import GroupList from './components/GroupList';
 import Login from './components/Login';
 import GuardedRoute from './components/GuardedRoute';
 import APIURL from './helpers/environment';
-import Rsvp from './components/rsvp';
+import Rsvp from './components/ConvertedComponents/Rsvp';
+
 import GuestList from './components/GuestList';
 
-// interface MyState {
-//   value: number;
-//   open: boolean;
-//   isAuthenticated: boolean;
-//   username: string;
-//   path: string;
-//   location: string;
-//   role: string;
-// }
-
-interface MyProps {
-  location: string;
-}
-
-const App = (props: MyProps) => {
+const App = ({ location }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [username, setUsername] = useState('');
   const [path, setPath] = useState('/guests');
-  const [location, setLocation] = useState('');
   const [role, setRole] = useState('');
 
   useEffect(() => {
@@ -65,14 +51,6 @@ const App = (props: MyProps) => {
   const logIn = () => {
     getRole();
     setIsAuthenticated(true);
-
-    // <Redirect
-    //   to={{
-    //     pathname:path,
-    //     state: { role:role },
-    //   }}
-    //   from='/login'
-    // />
   };
 
   const handleLogOut = () => {
@@ -84,7 +62,7 @@ const App = (props: MyProps) => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      {location === '/guests' || props.location === '/groups' ? (
+      {location === '/guests' || location === '/groups' ? (
         <AppBar position='sticky'>
           <Toolbar
             style={{
@@ -199,7 +177,7 @@ const App = (props: MyProps) => {
           path='/'
           exact
           //@ts-ignore
-          component={Home2}
+          component={Home}
         />
       </Switch>
     </ThemeProvider>
