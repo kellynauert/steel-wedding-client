@@ -1,3 +1,4 @@
+//@ts-nocheck
 import React, { Component } from 'react';
 import {
   Grid,
@@ -14,14 +15,12 @@ import {
   MenuItem,
 } from '@material-ui/core/';
 import { Guest, Group } from '../interfaces';
-import PlusOne from './PlusOne';
+import PlusOne from './ConvertedComponents/PlusOne';
 import APIURL from '../helpers/environment';
 
 interface MyState {
   firstName: string | null;
   lastName: string | null;
-  drinking: any;
-  diet: string[] | undefined;
   guest: Guest;
   plusOneAllowed: boolean | null;
   over21: boolean | null;
@@ -44,8 +43,6 @@ class EditGuest extends Component<MyProps, MyState> {
       firstName: this.props.guest.firstName,
       lastName: this.props.guest.lastName,
       attending: this.props.guest.attending,
-      drinking: this.props.guest.drinking,
-      diet: this.props.guest.diet ? this.props.guest.diet : [],
       over21: this.props.guest.over21,
       plusOneAllowed: this.props.guest.plusOneAllowed,
       groupId: this.props.guest.groupId,
@@ -66,8 +63,6 @@ class EditGuest extends Component<MyProps, MyState> {
         over21: this.state.over21,
         plusOneAllowed: this.state.plusOneAllowed,
         attending: this.state.attending,
-        drinking: this.state.drinking,
-        diet: this.state.diet,
         groupId: this.state.groupId,
       }),
       headers: new Headers({
@@ -78,7 +73,6 @@ class EditGuest extends Component<MyProps, MyState> {
   };
   handleAttendingChange = (e) => {
     if (e.target.name === 'attending' && e.target.value === 'true') {
-      this.setState({ drinking: null, diet: [] });
       if (this.props.guest.plusone) {
         fetch(`${APIURL}/plusone/${this.props.guest.plusone.id}`, {
           method: 'DELETE',
@@ -88,32 +82,11 @@ class EditGuest extends Component<MyProps, MyState> {
         }).then((response) => console.log(response));
       }
     }
-    if (e.target.name === 'over21' && e.target.value === 'false') {
-      this.setState({ drinking: false });
-    }
+
     // @ts-ignore
     this.setState({ [e.target.name]: JSON.parse(e.target.value) }, () => {
       this.saveGuest();
     });
-  };
-  handleDietChange = (e) => {
-    if (this.state.diet) {
-      if (e.target.checked) {
-        this.setState({ diet: [...this.state.diet, e.target.name] }, () => {
-          this.saveGuest();
-        });
-      } else {
-        let index = this.state.diet.indexOf(e.target.name);
-        this.setState(
-          {
-            diet: this.state.diet.filter((_, i) => i !== index),
-          },
-          () => {
-            this.saveGuest();
-          }
-        );
-      }
-    }
   };
 
   handleChange = (e) =>
@@ -256,73 +229,7 @@ class EditGuest extends Component<MyProps, MyState> {
                       />
                     </RadioGroup>
                   </Grid>
-                  {this.state.over21 === true || this.state.over21 === null ? (
-                    <Grid item xs={12}>
-                      <Typography variant='subtitle1'>Drinking</Typography>
 
-                      <RadioGroup
-                        name='drinking'
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'row',
-                        }}
-                        onChange={this.handleAttendingChange}
-                        defaultValue={
-                          this.props.guest.attending === null
-                            ? 'null'
-                            : this.props.guest.attending.toString()
-                        }
-                      >
-                        <FormControlLabel
-                          value='true'
-                          control={<Radio />}
-                          label='Yes'
-                        />
-                        <FormControlLabel
-                          value='false'
-                          control={<Radio />}
-                          label='No'
-                        />
-                        <FormControlLabel
-                          value='null'
-                          control={<Radio />}
-                          label='Unsure'
-                        />
-                      </RadioGroup>
-                    </Grid>
-                  ) : null}
-                  <Grid item xs={12}>
-                    <Typography variant='subtitle1'>Diet</Typography>
-
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          defaultChecked={
-                            this.state.diet
-                              ? this.state.diet.includes('vegetarian')
-                              : undefined
-                          }
-                          onChange={this.handleDietChange}
-                          name='Vegetarian'
-                        />
-                      }
-                      label='Vegetarian'
-                    />
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          defaultChecked={
-                            this.state.diet
-                              ? this.state.diet.includes('Pescatarian')
-                              : undefined
-                          }
-                          onChange={this.handleDietChange}
-                          name='Pescatarian'
-                        />
-                      }
-                      label='Pescatarian'
-                    />
-                  </Grid>
                   <Grid item xs={12}>
                     <Typography variant='subtitle1'>
                       Plus One Allowed
@@ -367,13 +274,10 @@ class EditGuest extends Component<MyProps, MyState> {
                         }}
                       />
                       <PlusOne
-                        key={
-                          this.props.guest.plusone
-                            ? this.props.guest.plusone.id
-                            : null
-                        }
-                        fetchGroupList={this.props.fetchGuestList}
+                        fetchGuest={this.props.fetchGuestList}
                         guest={this.state.guest}
+                        deletePlusOne={null}
+                        plusOne={this.state.guest.plusone}
                       />
                     </Grid>
                   ) : null}
