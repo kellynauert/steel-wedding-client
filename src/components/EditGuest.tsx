@@ -58,12 +58,14 @@ class EditGuest extends Component<MyProps, MyState> {
     fetch(`${APIURL}/guest/master/${this.props.guest.id}`, {
       method: 'PUT',
       body: JSON.stringify({
-        firstName: this.state.firstName,
-        lastName: this.state.lastName,
-        over21: this.state.over21,
-        plusOneAllowed: this.state.plusOneAllowed,
-        attending: this.state.attending,
-        groupId: this.state.groupId,
+        guest: {
+          firstName: this.state.firstName,
+          lastName: this.state.lastName,
+          over21: this.state.over21,
+          plusOneAllowed: this.state.plusOneAllowed,
+          attending: this.state.attending,
+          groupId: this.state.groupId,
+        },
       }),
       headers: new Headers({
         'Content-Type': 'application/json',
