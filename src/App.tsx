@@ -1,3 +1,4 @@
+//@ts-nocheck
 import './App.css';
 import React, { useState, useEffect } from 'react';
 import { Route, Link, Switch, Redirect } from 'react-router-dom';
@@ -19,13 +20,48 @@ import APIURL from './helpers/environment';
 import Rsvp from './components/ConvertedComponents/Rsvp';
 
 import GuestList from './components/GuestList';
-
+function debounce(fn, ms) {
+  let timer;
+  return (_) => {
+    clearTimeout(timer);
+    timer = setTimeout((_) => {
+      timer = null;
+      fn.apply(this, arguments);
+    }, ms);
+  };
+}
 const App = ({ location }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [username, setUsername] = useState('');
   const [path, setPath] = useState('/guests');
   const [role, setRole] = useState('');
+  const [mobile, setMobile] = useState(false);
+  const [dimensions, setDimensions] = React.useState({
+    height: window.innerHeight,
+    width: window.innerWidth,
+  });
+  useEffect(() => {
+    console.log(dimensions);
+    if (dimensions.width <= 768) {
+      setMobile(true);
+    } else {
+      setMobile(false);
+    }
+  }, [dimensions]);
+  useEffect(() => {
+    const debouncedHandleResize = debounce(function handleResize() {
+      setDimensions({
+        height: window.innerHeight,
+        width: window.innerWidth,
+      });
+    }, 300);
 
+    window.addEventListener('resize', debouncedHandleResize);
+
+    return (_) => {
+      window.removeEventListener('resize', debouncedHandleResize);
+    };
+  });
   useEffect(() => {
     getRole();
   }, []);
@@ -167,17 +203,11 @@ const App = ({ location }) => {
           path='/login'
           render={() => <Login auth={isAuthenticated} loginFunc={logIn} />}
         />
-        <Route
-          path='/rsvp'
-          exact
-          //@ts-ignore
-          component={Rsvp}
-        />
+        <Route path='/rsvp' render={() => <Rsvp mobile={mobile} />} />
         <Route
           path='/'
           exact
-          //@ts-ignore
-          component={Home}
+          render={() => <Home mobile={mobile} dimensions={dimensions} />}
         />
       </Switch>
     </ThemeProvider>

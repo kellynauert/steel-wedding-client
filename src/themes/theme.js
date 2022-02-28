@@ -5,26 +5,7 @@ import NimbusRomanBold from './fonts/NimbusRomNo9L-Med-webfont.woff';
 import NimbusRomanItalicBold from './fonts/NimbusRomNo9L-MedIta-webfont.woff';
 import Notera from './fonts/Notera_PersonalUseOnly.woff';
 
-import {
-  red,
-  pink,
-  purple,
-  deepPurple,
-  indigo,
-  blue,
-  lightBlue,
-  cyan,
-  teal,
-  green,
-  lightGreen,
-  lime,
-  yellow,
-  amber,
-  orange,
-  deepOrange,
-  brown,
-  grey,
-} from '@material-ui/core/colors';
+import { red, lightGreen } from '@material-ui/core/colors';
 
 const notera = {
   fontFamily: 'Notera',
@@ -138,10 +119,11 @@ const base = createMuiTheme({
       fontFamily: ['Nimbus Roman', 'sans-serif'].join(','),
     },
     h4: {
-      fontSize: '15px !important',
-      fontWeight: '600',
-      letterSpacing: '.03em',
+      fontFamily: ['Notera', 'serif'].join(','),
+      fontSize: '36px !important',
+      // letterSpacing: '.03em',
       opacity: '90%',
+      lineHeight: '36px',
     },
     h5: {
       fontSize: '14px !important',
@@ -173,12 +155,18 @@ const base = createMuiTheme({
       opacity: '90%',
     },
     body2: {
-      fontSize: '14px !important',
+      fontSize: '18px !important',
+      fontFamily: ['Nimbus Roman', 'sans-serif'].join(','),
+      letterSpacing: '.05em',
+      lineHeight: '24px',
+
       opacity: '90%',
     },
     caption: {
-      fontSize: '13px !important',
-      opacity: '90%',
+      fontSize: '14px !important',
+      fontFamily: ['Nimbus Roman Italic', 'sans-serif'].join(','),
+      letterSpacing: '.05em',
+      lineHeight: '18px',
     },
     button: {
       fontSize: '14px !important',
@@ -213,6 +201,13 @@ const theme = createMuiTheme(base, {
           nimbusRomanItalicBold,
           notera,
         ],
+      },
+    },
+    MuiOutlinedInput: {
+      input: {
+        '&::placeholder': {
+          color: 'black !important',
+        },
       },
     },
     MuiDialogContent: {

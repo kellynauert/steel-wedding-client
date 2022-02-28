@@ -21,7 +21,53 @@ import APIURL from '../helpers/environment';
 import Stats from './Stats';
 
 var _ = require('lodash');
-
+const CustomToolbar = ({ setSearchTerm, stats, createUser }) => {
+  return (
+    <Grid
+      container
+      alignItems='center'
+      style={{
+        padding: '12px',
+        borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
+      }}
+    >
+      <Grid
+        item
+        container
+        xs={12}
+        style={{
+          marginBottom: '24px',
+        }}
+      >
+        <Stats data={stats} />
+      </Grid>
+      <Grid item xs={6} md={3}>
+        <TextField
+          fullWidth
+          variant='outlined'
+          key='search'
+          placeholder='Search'
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </Grid>
+      <Grid item xs>
+        <GridToolbarExport />
+      </Grid>
+      <Grid item xs={6} md={3}>
+        <Button
+          fullWidth
+          variant='contained'
+          color='secondary'
+          style={{ whiteSpace: 'nowrap' }}
+          startIcon={<AddIcon />}
+          onClick={createUser}
+        >
+          Add Guest
+        </Button>
+      </Grid>
+    </Grid>
+  );
+};
 const GuestList = () => {
   const [guests, setGuests] = useState([]);
   const [filteredGuests, setFilteredGuests] = useState([]);
@@ -31,72 +77,25 @@ const GuestList = () => {
   const [stats, setStats] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
 
-  useEffect(() => console.log(guests), [guests]);
   useEffect(() => {
     fetchGuestList();
     fetchGroups();
     fetchStats();
   }, []);
-
+  useEffect(() => console.log(searchTerm), [searchTerm]);
   useEffect(() => {
-    let items = guests?.sort().filter((guest) => {
-      let search =
-        (guest.firstName ? guest.firstName.toLowerCase() : '') +
-        ' ' +
-        (guest.lastName ? guest.lastName.toLowerCase() : '');
+    if (guests.length > 0) {
+      let items = (guests || []).sort().filter((guest) => {
+        let search =
+          (guest.firstName ? guest.firstName.toLowerCase() : '') +
+          ' ' +
+          (guest.lastName ? guest.lastName.toLowerCase() : '');
 
-      return search.includes(searchTerm.toLowerCase());
-    });
-    setFilteredGuests(items);
+        return searchTerm ? search.includes(searchTerm.toLowerCase()) : true;
+      });
+      setFilteredGuests(items);
+    }
   }, [searchTerm, guests]);
-
-  const CustomToolbar = () => {
-    return (
-      <Grid
-        container
-        alignItems='center'
-        style={{
-          padding: '12px',
-          borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
-        }}
-      >
-        <Grid
-          item
-          container
-          xs={12}
-          style={{
-            marginBottom: '24px',
-          }}
-        >
-          <Stats data={stats} />
-        </Grid>
-        <Grid item xs={6} md={3}>
-          <TextField
-            fullWidth
-            variant='outlined'
-            key='search'
-            placeholder='Search'
-            onChange={_.debounce((e) => setSearchTerm(e.target.value), 300)}
-          />
-        </Grid>
-        <Grid item xs>
-          <GridToolbarExport />
-        </Grid>
-        <Grid item xs={6} md={3}>
-          <Button
-            fullWidth
-            variant='contained'
-            color='secondary'
-            style={{ whiteSpace: 'nowrap' }}
-            startIcon={<AddIcon />}
-            onClick={createUser}
-          >
-            Add Guest
-          </Button>
-        </Grid>
-      </Grid>
-    );
-  };
 
   const fetchStats = () => {
     fetch(`${APIURL}/guest/master/count`, {
@@ -397,9 +396,7 @@ const GuestList = () => {
       editable: true,
       valueGetter: (params) => {
         let drinks = [];
-        if (params.row.mead === true) {
-          drinks.push('Mead');
-        }
+
         if (params.row.wine === true) {
           drinks.push('Wine');
         }
@@ -542,6 +539,13 @@ const GuestList = () => {
               rows={filteredGuests}
               onEditCellChangeCommitted={handleEditCellChange}
               components={{ Toolbar: CustomToolbar }}
+              componentsProps={{
+                toolbar: {
+                  setSearchTerm: setSearchTerm,
+                  stats: stats,
+                  createUser: createUser,
+                },
+              }}
             />
           ) : null}
         </Box>

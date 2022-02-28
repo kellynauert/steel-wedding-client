@@ -2,25 +2,24 @@
 import React, { useState, useEffect } from 'react';
 import {
   Card,
-  CardContent,
   Grid,
   Typography,
-  Box,
   TextField,
   AppBar,
+  Paper,
 } from '@material-ui/core/';
-import floret from '../../assets/floret.svg';
-import floretLeft from '../../assets/floretleft.svg';
+
 import APIURL from '../../helpers/environment';
 import BottomNav from './BottomNav';
 import CardSelect from './CardSelect';
+import { makeStyles } from '@material-ui/core/styles';
+import { Redirect } from 'react-router-dom';
 
-const Rsvp = () => {
+const Rsvp = ({ mobile }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [groups, setGroups] = useState([]);
   const [group, setGroup] = useState({});
   const [open, setOpen] = useState(false);
-  const [mobile, setMobile] = useState(false);
 
   const searchFunction = () => {
     let items = groups.sort().filter((item: any) => {
@@ -46,12 +45,6 @@ const Rsvp = () => {
 
   useEffect(() => {
     fetchGroupList();
-    if (window.screen.width <= 768) {
-      setMobile(true);
-    } else {
-      setMobile(false);
-    }
-    console.log(window.screen.width);
   }, []);
 
   const fetchGroupList = () => {
@@ -67,138 +60,123 @@ const Rsvp = () => {
         setGroup(group);
       });
   };
+  const useStyles = makeStyles((theme) => ({
+    drawerPaper: {
+      backgroundColor: theme.base.palette.primary.light,
+      height: '100vh',
+    },
+  }));
+  const classes = useStyles();
+
   return (
-    <Box>
-      {' '}
-      <Grid container>
-        <Grid item xs></Grid>
-        <Grid item xs={12} md={6} lg={4}>
-          {open ? (
-            <CardSelect
-              open={open}
-              mobile={mobile}
-              group={group}
-              setOpen={setOpen}
-              fetchGroupList={fetchGroupList}
-              setGroup={setGroup}
+    <Paper className={classes.drawerPaper} elevation={0}>
+      {!mobile ? <Redirect to='/' /> : null}
+      {open ? (
+        <CardSelect
+          open={open}
+          mobile={mobile}
+          group={group}
+          setOpen={setOpen}
+          fetchGroupList={fetchGroupList}
+          setGroup={setGroup}
+        />
+      ) : null}
+      <AppBar
+        color='transparent'
+        position='sticky'
+        variant='outlined'
+        style={{
+          width: '100%',
+          border: 'none',
+          backgroundColor: '#f3d2dc',
+          borderBottom: '1px solid #E3D3D6',
+        }}
+      >
+        <Grid container style={{ padding: '16px' }}>
+          <Grid item xs={12}>
+            <Typography variant={mobile ? 'h3' : 'h1'} align='center'>
+              RSVP
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              variant='outlined'
+              placeholder='Search your name here'
+              onChange={_.debounce((e) => setSearchTerm(e.target.value), 300)}
             />
-          ) : null}
-          <AppBar
-            color={mobile ? 'secondary' : 'transparent'}
-            position='sticky'
-            variant={mobile ? 'elevation' : 'outlined'}
-            style={{
-              border: mobile ? null : 'none',
-              backgroundColor: '#FFF1F1',
-              borderBottom: mobile ? null : '1px solid grey',
-            }}
-          >
-            <Grid container style={{ padding: '16px' }}>
-              <Grid item xs={12}>
-                <Typography variant='h3' align='center'>
-                  RSVP
-                </Typography>
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  size='small'
-                  variant='outlined'
-                  placeholder='Search your name here'
-                  onChange={_.debounce(
-                    (e) => setSearchTerm(e.target.value),
-                    300
-                  )}
-                />
-              </Grid>
-            </Grid>
-          </AppBar>
-          <Grid
-            container
-            spacing={1}
-            style={{ padding: '16px', margin: '0', width: '100%' }}
-          >
-            {searchFunction().map((group, index) => {
-              return (
-                <Grid item xs={12} key={group.id}>
-                  <Card
-                    style={{
-                      cursor: 'pointer',
-                    }}
-                    onClick={() => handleOpen(group)}
-                  >
-                    <Box
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        flexDirection: 'column',
-                      }}
-                      mt={1}
-                    >
-                      {/* <img src={floret} style={{ width: '50%' }} alt='' /> */}
-                    </Box>
-                    <CardContent>
-                      <Grid
-                        container
-                        spacing={2}
-                        style={{
-                          display: 'flex',
-                          alignContent: 'center',
-                        }}
-                      >
-                        <Grid item xs={1} style={{ display: 'flex' }}>
-                          <img src={floretLeft} alt='' />
-                        </Grid>
-                        <Grid item container xs={10} spacing={1}>
-                          {group.guests
-                            .sort((a, b) => a.id - b.id)
-                            .map((guest, index) => {
-                              return (
-                                <Grid item xs key={guest.id}>
-                                  <Typography
-                                    align='center'
-                                    style={{
-                                      whiteSpace: 'nowrap',
-                                    }}
-                                  >
-                                    {guest.firstName} {guest.lastName}
-                                  </Typography>
-                                </Grid>
-                              );
-                            })}
-                        </Grid>
-                        <Grid
-                          item
-                          xs={1}
-                          style={{
-                            display: 'flex',
-                            transform: 'scaleX(-1)',
-                          }}
-                        >
-                          <img src={floretLeft} alt='' />
-                        </Grid>
-                      </Grid>
-                    </CardContent>
-                    <Box
-                      mb={1}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        flexDirection: 'column',
-                      }}
-                    >
-                      {/* <img src={floret} style={{ width: '50%' }} alt='' /> */}
-                    </Box>
-                  </Card>
-                </Grid>
-              );
-            })}
           </Grid>
         </Grid>
-        <Grid item xs></Grid>
-      </Grid>{' '}
-      <BottomNav />
-    </Box>
+      </AppBar>
+
+      <Grid
+        container
+        spacing={1}
+        style={{
+          padding: '16px',
+          margin: '0',
+          width: '100%',
+        }}
+      >
+        {searchFunction().map((group, index) => {
+          return (
+            <Grid item xs={12} key={group.id}>
+              <Card
+                variant='outlined'
+                onClick={() => handleOpen(group)}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  padding: '16px',
+                }}
+              >
+                <Grid
+                  container
+                  spacing={1}
+                  style={{
+                    display: 'flex',
+                    alignContent: 'center',
+                    justifyContent: 'space-between',
+                    minHeight: '100px',
+                    width: '100%',
+                    border: '1px #E3D3D6 solid',
+                  }}
+                >
+                  <Grid item container xs={12} spacing={1}>
+                    {group.guests
+                      .sort((a, b) => a.id - b.id)
+                      .map((guest, i) => {
+                        return (
+                          <Grid
+                            item
+                            xs
+                            style={{ minWidth: '50%' }}
+                            key={guest.id}
+                          >
+                            <Typography
+                              align='center'
+                              style={{
+                                whiteSpace: 'nowrap',
+                              }}
+                            >
+                              {guest.firstName} {guest.lastName}
+                            </Typography>
+                          </Grid>
+                        );
+                      })}
+                  </Grid>
+                </Grid>
+              </Card>
+            </Grid>
+          );
+        })}
+      </Grid>
+      {mobile ? <BottomNav /> : null}
+    </Paper>
   );
 };
 export default Rsvp;

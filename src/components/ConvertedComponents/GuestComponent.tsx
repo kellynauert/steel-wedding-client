@@ -45,7 +45,6 @@ const GuestComponent = ({ guestId }) => {
         );
         setDrinking(json.drinking);
         let guestDrinks = {};
-        guestDrinks.mead = json.mead;
         guestDrinks.wine = json.wine;
         guestDrinks.beer = json.beer;
         guestDrinks.cider = json.cider;
@@ -73,7 +72,6 @@ const GuestComponent = ({ guestId }) => {
             attending: attending ? JSON.parse(attending) : null,
             drinking: drinking,
             vegetarian: vegetarian ? JSON.parse(vegetarian) : null,
-            mead: drinks.mead,
             wine: drinks.wine,
             beer: drinks.beer,
             cider: drinks.cider,
@@ -112,6 +110,7 @@ const GuestComponent = ({ guestId }) => {
                 </Grid>
                 <Grid item xs={12}>
                   <RadioGroup
+                    fullWidth
                     name='attending'
                     onChange={(e) => setAttending(e.target.value)}
                     value={attending}
@@ -119,8 +118,7 @@ const GuestComponent = ({ guestId }) => {
                     <FormControlLabel
                       value='true'
                       control={<Radio />}
-                      label='Attending'
-                      style={{ width: '40%' }}
+                      label='Attending & Fully Vaccinated'
                     />
                     <FormControlLabel
                       value='false'
@@ -149,10 +147,10 @@ const GuestComponent = ({ guestId }) => {
                       style={{ whiteSpace: 'nowrap' }}
                     >
                       <FormControlLabel
+                        style={{ width: '100%' }}
                         checked={drinks.beer}
                         control={<Checkbox />}
                         label='Beer'
-                        style={{ width: '100px' }}
                         onChange={(e) => {
                           if (drinking !== true) {
                             setDrinking(true);
@@ -161,6 +159,7 @@ const GuestComponent = ({ guestId }) => {
                         }}
                       />
                       <FormControlLabel
+                        style={{ width: '100%' }}
                         checked={drinks.wine}
                         control={<Checkbox />}
                         label='Wine'
@@ -170,31 +169,17 @@ const GuestComponent = ({ guestId }) => {
                           }
                           setDrinks({ ...drinks, wine: e.target.checked });
                         }}
-                        style={{ width: '100px' }}
                       />
-                      <Box width='100%'></Box>
                       <FormControlLabel
+                        style={{ width: '100%' }}
                         checked={drinks.cider}
                         control={<Checkbox />}
                         label='Cider'
-                        style={{ width: '100px' }}
                         onChange={(e) => {
                           if (drinking !== true) {
                             setDrinking(true);
                           }
                           setDrinks({ ...drinks, cider: e.target.checked });
-                        }}
-                      />{' '}
-                      <FormControlLabel
-                        checked={drinks.mead}
-                        control={<Checkbox />}
-                        label='Mead'
-                        style={{ width: '100px' }}
-                        onChange={(e) => {
-                          if (drinking !== true) {
-                            setDrinking(true);
-                          }
-                          setDrinks({ ...drinks, mead: e.target.checked });
                         }}
                       />{' '}
                       <Divider width='100%' />
@@ -222,7 +207,6 @@ const GuestComponent = ({ guestId }) => {
                             setDrinks({
                               beer: false,
                               wine: false,
-                              mead: false,
                               cider: false,
                             });
                           }
@@ -259,7 +243,11 @@ const GuestComponent = ({ guestId }) => {
                       <img
                         src={soup}
                         alt='soup'
-                        style={{ height: '60px', opacity: '.87' }}
+                        style={{
+                          height: '60px',
+                          opacity: '.87',
+                          marginLeft: '16px',
+                        }}
                       ></img>
                     </Grid>
                   </Grid>

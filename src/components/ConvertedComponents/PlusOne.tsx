@@ -49,7 +49,6 @@ const PlusOne = ({
         );
         setDrinking(json.drinking);
         let guestDrinks = {};
-        guestDrinks.mead = json.mead;
         guestDrinks.wine = json.wine;
         guestDrinks.beer = json.beer;
         guestDrinks.cider = json.cider;
@@ -89,7 +88,6 @@ const PlusOne = ({
             lastName: lastName,
             drinking: drinking,
             vegetarian: vegetarian ? JSON.parse(vegetarian) : null,
-            mead: drinks.mead,
             wine: drinks.wine,
             beer: drinks.beer,
             cider: drinks.cider,
@@ -194,18 +192,6 @@ const PlusOne = ({
                     setDrinks({ ...drinks, cider: e.target.checked });
                   }}
                 />{' '}
-                <FormControlLabel
-                  checked={drinks.mead}
-                  control={<Checkbox />}
-                  label='Mead'
-                  style={{ width: '100px' }}
-                  onChange={(e) => {
-                    if (drinking !== true) {
-                      setDrinking(true);
-                    }
-                    setDrinks({ ...drinks, mead: e.target.checked });
-                  }}
-                />{' '}
                 <Divider width='100%' />
               </Grid>
               <Grid item xs={12} container style={{ whiteSpace: 'nowrap' }}>
@@ -221,7 +207,6 @@ const PlusOne = ({
                       setDrinks({
                         beer: false,
                         wine: false,
-                        mead: false,
                         cider: false,
                       });
                     }
@@ -269,7 +254,7 @@ const PlusOne = ({
             <Button onClick={() => deletePlusOne()}>Remove Plus One</Button>
           </Grid>
         </Grid>
-      ) : (
+      ) : plusOneAllowed ? (
         <Grid item xs={12}>
           <hr
             style={{
@@ -284,7 +269,7 @@ const PlusOne = ({
             Add Plus One
           </Button>
         </Grid>
-      )}
+      ) : null}
     </>
   );
 };

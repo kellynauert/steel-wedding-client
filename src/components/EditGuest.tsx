@@ -209,9 +209,9 @@ class EditGuest extends Component<MyProps, MyState> {
                       style={{ display: 'flex', flexDirection: 'row' }}
                       onChange={this.handleAttendingChange}
                       defaultValue={
-                        this.props.guest.attending === null
+                        this.props.guest.over21 === null
                           ? 'null'
-                          : this.props.guest.attending.toString()
+                          : this.props.guest.over21.toString()
                       }
                     >
                       <FormControlLabel

@@ -82,12 +82,6 @@ const Stats = ({ data }) => {
         </Grid>
         <Grid item xs>
           <Box textAlign='center'>
-            <Typography variant='h2'>{data.mead}</Typography>
-            <Typography variant='body1'>Mead</Typography>
-          </Box>
-        </Grid>
-        <Grid item xs>
-          <Box textAlign='center'>
             <Typography variant='h2'>{data.beer}</Typography>
             <Typography variant='body1'>Beer</Typography>
           </Box>
