@@ -160,13 +160,14 @@ const base = createMuiTheme({
       letterSpacing: '.05em',
       lineHeight: '24px',
 
-      opacity: '90%',
+      opacity: '95%',
     },
     caption: {
       fontSize: '14px !important',
       fontFamily: ['Nimbus Roman Italic', 'sans-serif'].join(','),
       letterSpacing: '.05em',
       lineHeight: '18px',
+      opacity: '85%',
     },
     button: {
       fontSize: '14px !important',

@@ -7,11 +7,11 @@ import {
   Typography,
   CardContent,
   Drawer,
+  Link,
   Button,
 } from '@material-ui/core/';
 import image from '../../assets/flowers.svg';
 
-import { Link } from 'react-router-dom';
 import BottomNav from './BottomNav';
 import Rsvp from './Rsvp';
 import { makeStyles } from '@material-ui/core/styles';
@@ -81,41 +81,45 @@ const Home = ({ mobile, dimensions }) => {
 
                 <Typography variant='body2'>
                   Clayshire Castle
-                  <Link
-                    href='https://www.google.com/maps/place/Clayshire+Castle/@39.3977577,-86.9491932,17z/data=!3m1!4b1!4m8!3m7!1s0x886d03b30c742ead:0xf7939cd9d84be637!5m2!4m1!1i2!8m2!3d39.3977536!4d-86.9470045'
-                    target='_blank'
-                    style={{ color: 'inherit' }}
-                  >
-                    <br />
-                    8780 E County Rd 75 N
-                    <br />
-                    Bowling Green, IN 47833
-                  </Link>
+                  <br />
+                  8780 E County Rd 75 N
+                  <br />
+                  Bowling Green, IN 47833
                 </Typography>
+                <br />
+                <Link
+                  href='https://www.google.com/maps/place/Clayshire+Castle/@39.3977577,-86.9491932,17z/data=!3m1!4b1!4m8!3m7!1s0x886d03b30c742ead:0xf7939cd9d84be637!5m2!4m1!1i2!8m2!3d39.3977536!4d-86.9470045'
+                  target='_blank'
+                  style={{ color: 'inherit', textDecoration: 'none' }}
+                >
+                  {' '}
+                  <Button variant='outlined' color='secondary'>
+                    View in Google Maps
+                  </Button>
+                </Link>
               </Grid>{' '}
               <Grid item xs={12} md={6}>
                 <Typography variant='h2' style={{ marginBottom: '8px' }}>
-                  Date
+                  Date & Time
                 </Typography>
                 <Typography variant='body2'>Saturday, May 28th 2022</Typography>
+                <Typography variant='body2'>Ceremony at 5:00 PM</Typography>
                 <br />
-                <Button variant='outlined' color='secondary'>
-                  Add to Calendar
-                </Button>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Typography variant='h2' style={{ marginBottom: '8px' }}>
-                  Time
-                </Typography>
-
-                <Typography variant='body2'>
-                  Ceremony at 5:00 PM
-                  <br /> Accepting Guests at 4:30 PM
-                </Typography>
-
+                <Link
+                  href='https://calendar.google.com/event?action=TEMPLATE&tmeid=MGhsMmhwcHUxM2I4bGozcjJqNTZydXJ1cDQga2VsbHluYXVlcnRAbQ&tmsrc=kellynauert%40gmail.com'
+                  target='_blank'
+                  style={{ color: 'inherit', textDecoration: 'none' }}
+                >
+                  {' '}
+                  <Button variant='outlined' color='secondary'>
+                    Add to Calendar{' '}
+                  </Button>
+                </Link>
+                <br /> <br />
                 <Typography variant='caption'>
                   The Castle can be difficult to find, please give yourself
-                  plenty of extra time to arrive.
+                  plenty of extra time to arrive. Guests will be accepted
+                  starting at 4:30.
                 </Typography>
               </Grid>{' '}
               <Grid item xs={12} md={6}>
@@ -133,16 +137,20 @@ const Home = ({ mobile, dimensions }) => {
                   Registry
                 </Typography>
                 <Typography variant='caption'>
-                  We are registered at Target and Amazon through{' '}
-                  <Link
-                    href='www.zola.com/registry/nauertsteelwedding'
-                    target='_blank'
-                    style={{ color: 'inherit' }}
-                  >
-                    Zola
-                  </Link>
-                  .
-                </Typography>
+                  We are registered at Target and Amazon through Zola.
+                </Typography>{' '}
+                <br />
+                <br />
+                <Link
+                  href='www.zola.com/registry/nauertsteelwedding'
+                  target='_blank'
+                  style={{ color: 'inherit', textDecoration: 'none' }}
+                >
+                  {' '}
+                  <Button variant='outlined' color='secondary'>
+                    Visit Zola
+                  </Button>
+                </Link>
               </Grid>{' '}
               <Grid item xs={12} md={6}>
                 <Typography variant='h2' style={{ marginBottom: '8px' }}>
@@ -177,7 +185,7 @@ const Home = ({ mobile, dimensions }) => {
                   <Link
                     href='https://goo.gl/maps/ySYfaWbMNRRh7vTp9'
                     target='_blank'
-                    style={{ color: 'inherit' }}
+                    color='secondary'
                   >
                     Motel 6
                   </Link>{' '}
@@ -185,7 +193,7 @@ const Home = ({ mobile, dimensions }) => {
                   <Link
                     href='https://g.page/holiday-inn-express-cloverdale?share'
                     target='_blank'
-                    style={{ color: 'inherit' }}
+                    color='secondary'
                   >
                     Holiday Inn Express
                   </Link>{' '}
@@ -193,7 +201,7 @@ const Home = ({ mobile, dimensions }) => {
                   <Link
                     href='https://goo.gl/maps/8iCfQRxUEMfqgFUG6'
                     target='_blank'
-                    style={{ color: 'inherit' }}
+                    color='secondary'
                   >
                     Econo Lodge
                   </Link>{' '}
@@ -201,7 +209,7 @@ const Home = ({ mobile, dimensions }) => {
                   <Link
                     href='https://goo.gl/maps/VTmRHskUaDNfuUhL9'
                     target='_blank'
-                    style={{ color: 'inherit' }}
+                    color='secondary'
                   >
                     Days Inn by Wyndham
                   </Link>{' '}
