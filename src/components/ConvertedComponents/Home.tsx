@@ -7,6 +7,7 @@ import {
   Typography,
   CardContent,
   Drawer,
+  Button,
 } from '@material-ui/core/';
 import image from '../../assets/flowers.svg';
 
@@ -97,6 +98,10 @@ const Home = ({ mobile, dimensions }) => {
                   Date
                 </Typography>
                 <Typography variant='body2'>Saturday, May 28th 2022</Typography>
+                <br />
+                <Button variant='outlined' color='secondary'>
+                  Add to Calendar
+                </Button>
               </Grid>
               <Grid item xs={12} md={6}>
                 <Typography variant='h2' style={{ marginBottom: '8px' }}>
