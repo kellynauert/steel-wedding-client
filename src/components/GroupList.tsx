@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+//@ts-nocheck
+import React, { useEffect, useState } from 'react';
 import {
   Grid,
   Box,
@@ -11,7 +12,6 @@ import {
   Typography,
 } from '@material-ui/core';
 import { DataGrid, GridToolbarExport } from '@material-ui/data-grid';
-import { Group } from '../interfaces';
 import EditGroup from './EditGroup';
 import APIURL from '../helpers/environment';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -19,46 +19,84 @@ import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 var _ = require('lodash');
 
-interface MyState {
-  open: boolean;
-  groups: Group[];
-  search: string[] | null;
-  searchTerm: string;
-  filteredGroups: Group[] | null | undefined;
-  group: Group | null;
-  openDialog: boolean;
-}
+const CustomToolbar = ({ handleChange, createGroup }) => {
+  return (
+    <Box
+      padding={2}
+      style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        borderBottom: '1px solid rgba(224, 224, 224, 1)',
+      }}
+    >
+      <Grid
+        item
+        md={2}
+        spacing={2}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
+        <TextField
+          fullWidth
+          variant='outlined'
+          placeholder='Search'
+          onChange={_.debounce(handleChange, 300)}
+        />
+      </Grid>
 
-interface MyProps {
-  role: string;
-}
-class GroupList extends Component<MyProps, MyState> {
-  constructor(props) {
-    super(props);
-    this.state = {
-      open: false,
-      groups: [],
-      group: null,
-      search: [],
-      searchTerm: '',
-      filteredGroups: [],
-      openDialog: false,
-    };
-  }
-  handleDialogClose = () => {
-    this.setState({ openDialog: false });
-    this.fetchGroupList();
-    this.forceUpdate();
+      <Grid
+        item
+        md={2}
+        style={{
+          display: 'flex',
+          alignContent: 'center',
+          justifyContent: 'flex-end',
+        }}
+      >
+        <GridToolbarExport />
+        <Tooltip arrow placement='right' title={'Add A Guest'}>
+          <span
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              paddingLeft: '16px',
+            }}
+          >
+            <Button
+              variant='contained'
+              color='secondary'
+              startIcon={<AddIcon />}
+              onClick={createGroup}
+              style={{ height: '36px' }}
+            >
+              Add Group
+            </Button>
+          </span>
+        </Tooltip>
+      </Grid>
+    </Box>
+  );
+};
+const GroupList = () => {
+  const [open, setOpen] = useState(false);
+  const [groups, setGroups] = useState([]);
+  const [group, setGroup] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredGroups, setFilteredGroups] = useState([]);
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const handleDialogClose = () => {
+    setOpenDialog(false);
+    fetchGroupList();
   };
-  handleChange = (e) => {
-    this.setState(
-      {
-        searchTerm: e.target.value,
-      },
-      () => this.searchFunction()
-    );
+  const handleChange = (e) => {
+    setSearchTerm(e.target.value);
   };
-  createGroup = () => {
+
+  useEffect(() => searchFunction(), [searchTerm]);
+  const createGroup = () => {
     fetch(`${APIURL}/group/`, {
       method: 'POST',
       body: JSON.stringify({
@@ -68,29 +106,24 @@ class GroupList extends Component<MyProps, MyState> {
         'Content-Type': 'application/json',
         Authorization: localStorage.token,
       }),
-    })
-      .then((response) => response.json())
-      .then((json) => this.fetchGroup(json.id));
+    }).then((json) => fetchGroup(json.id));
   };
-  deleteUser = (id) => () => {
+  const deleteUser = (id) => () => {
     fetch(`${APIURL}/group/${id}`, {
       method: 'DELETE',
       headers: new Headers({
         'Content-Type': 'application/json',
         Authorization: localStorage.token,
       }),
-    })
-      .then((response) => response.json())
-      .then(this.fetchGroupList);
+    }).then(fetchGroupList);
   };
-  searchFunction = () => {
-    let items = this.state.groups?.sort().filter((group) => {
-      let found = false;
+  const searchFunction = () => {
+    let items = groups?.sort().filter((item1) => {
       let search =
-        (group.groupName ? group.groupName.toLowerCase() : '') +
+        (item1.groupName ? item1.groupName.toLowerCase() : '') +
         ' ' +
-        (group.guests
-          ? group.guests
+        (item1.guests
+          ? item1.guests
               ?.map(
                 (item) =>
                   (item.firstName ? item.firstName.toLowerCase() : '') +
@@ -99,31 +132,24 @@ class GroupList extends Component<MyProps, MyState> {
               )
               .join(' ')
           : '');
-      if (search.includes(this.state.searchTerm.toLowerCase())) {
-        found = true;
-      }
-      return found;
+      return search.includes(searchTerm.toLowerCase());
     });
 
-    this.setState({
-      filteredGroups: items,
-    });
+    setFilteredGroups(items);
   };
-  handleOpen = () => this.setState({ open: true });
 
-  componentDidMount() {
-    this.fetchGroupList();
-  }
-  handleErrors = (response) => {
-    console.log(response);
+  const handleOpen = () => setOpen(true);
+
+  useEffect(() => fetchGroupList(), []);
+  const handleErrors = (response) => {
     if (response.message === 'Not Authorized') {
-      this.handleOpen();
+      handleOpen();
     } else {
       return response;
     }
   };
 
-  fetchGroupList = () => {
+  const fetchGroupList = () => {
     if (localStorage.token) {
       fetch(`${APIURL}/group/`, {
         method: 'GET',
@@ -133,19 +159,17 @@ class GroupList extends Component<MyProps, MyState> {
         }),
       })
         .then((response) => response.json())
-        .then((response) => this.handleErrors(response))
+        .then((response) => handleErrors(response))
         .then((groupData) => {
-          this.setState({
-            groups: groupData,
-            filteredGroups: groupData,
-          });
+          setGroups(groupData);
+          setFilteredGroups(groupData);
         });
     } else {
-      this.handleOpen();
+      handleOpen();
     }
   };
 
-  fetchGroup = (id) => {
+  const fetchGroup = (id) => {
     if (localStorage.token) {
       fetch(`${APIURL}/group/${id}`, {
         method: 'GET',
@@ -155,235 +179,156 @@ class GroupList extends Component<MyProps, MyState> {
         }),
       })
         .then((response) => response.json())
-        .then((response) => this.handleErrors(response))
+        .then((response) => handleErrors(response))
         .then((guestData) => {
-          this.setState({
-            group: guestData,
-          });
+          setGroup(guestData);
         })
-        .then(() => this.setState({ openDialog: true }));
+
+        .then(() => setOpenDialog(true));
     } else {
-      this.handleOpen();
+      handleOpen();
     }
   };
-  handleEditCellChange = (e) => {
-    console.log(e);
-
+  const handleEditCellChange = (e) => {
     fetch(`${APIURL}/group/${e.id}`, {
       method: 'PUT',
       body: JSON.stringify({
-        [e.field]: e.props.value,
+        [e.field]: e.value,
       }),
       headers: new Headers({
         'Content-Type': 'application/json',
         Authorization: localStorage.token,
       }),
-    }).then((res) => res.json());
+    });
   };
-  CustomToolbar = () => {
-    return (
-      <Box
-        padding={2}
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          borderBottom: '1px solid rgba(224, 224, 224, 1)',
-        }}
+
+  let columns = [
+    {
+      field: 'id',
+      headerName: 'id',
+    },
+    {
+      field: 'groupName',
+      headerName: 'Group name',
+      flex: 0.5,
+      editable: true,
+    },
+
+    {
+      field: 'members',
+      headerName: 'Members',
+      valueGetter: (params) =>
+        params.row.guests
+          ?.map((item) => item.firstName + ' ' + item.lastName)
+          .join(', '),
+      flex: 1,
+    },
+    {
+      field: 'children',
+      headerName: 'Children',
+
+      flex: 0.5,
+    },
+    {
+      field: 'delete',
+      headerName: ' ',
+      flex: 0.2,
+      align: 'center',
+      renderCell: (params) => (
+        <Tooltip
+          arrow
+          placement='left'
+          title={
+            params.row.guests.length > 0
+              ? 'Can only delete groups with no members'
+              : 'Delete group'
+          }
+        >
+          <span style={{ display: 'flex', justifyContent: 'center' }}>
+            <IconButton
+              aria-label='delete'
+              onClick={deleteUser(params.id)}
+              disabled={params.row.guests.length > 0 ? true : false}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </span>
+        </Tooltip>
+      ),
+    },
+    {
+      field: 'edit',
+      headerName: ' ',
+      flex: 0.2,
+      align: 'center',
+      renderCell: (params) => (
+        <IconButton aria-label='edit' onClick={() => fetchGroup(params.id)}>
+          <EditIcon color='primary' />
+        </IconButton>
+      ),
+    },
+  ];
+
+  return (
+    <Grid container>
+      <Dialog
+        open={openDialog}
+        onClose={handleDialogClose}
+        aria-labelledby='form-dialog-title'
       >
-        <Grid
-          item
-          md={2}
-          spacing={2}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
-          <TextField
-            fullWidth
-            variant='outlined'
-            placeholder='Search'
-            onChange={_.debounce(this.handleChange, 300)}
+        {group ? (
+          <EditGroup
+            group={group}
+            fetchGroupList={fetchGroupList}
+            groups={groups}
           />
-        </Grid>
-
-        <Grid
-          item
-          md={2}
+        ) : null}
+        <DialogActions>
+          <Typography variant='subtitle2' style={{ color: 'white' }}>
+            Changes saved automatically
+          </Typography>
+          <Button
+            onClick={handleDialogClose}
+            color='primary'
+            variant='contained'
+          >
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Grid item xs={12}>
+        <Box
           style={{
             display: 'flex',
-            alignContent: 'center',
-            justifyContent: 'flex-end',
+            flexDirection: 'column',
+            width: '100%',
+            height: '90vh',
+            padding: '16px',
           }}
         >
-          <GridToolbarExport />
-          <Tooltip
-            arrow
-            placement='right'
-            title={
-              this.props.role === 'Admin'
-                ? 'Add A Guest'
-                : 'Only admins may add groups'
-            }
-          >
-            <span
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                paddingLeft: '16px',
+          {groups ? (
+            <DataGrid
+              density='comfortable'
+              //@ts-ignore
+              columns={columns}
+              //@ts-ignore
+              rows={filteredGroups}
+              onEditCellChangeCommitted={handleEditCellChange}
+              disableColumnMenu
+              components={{ Toolbar: CustomToolbar }}
+              componentsProps={{
+                toolbar: {
+                  setSearchTerm: setSearchTerm,
+                  createGroup: createGroup,
+                  handleChange: handleChange,
+                },
               }}
-            >
-              <Button
-                variant='contained'
-                color='secondary'
-                startIcon={<AddIcon />}
-                disabled={this.props.role !== 'Admin' ? true : false}
-                onClick={this.createGroup}
-                style={{ height: '36px' }}
-              >
-                Add Group
-              </Button>
-            </span>
-          </Tooltip>
-        </Grid>
-      </Box>
-    );
-  };
-  render() {
-    let columns = [
-      {
-        field: 'id',
-        headerName: 'id',
-      },
-      {
-        field: 'groupName',
-        headerName: 'Group name',
-        flex: 0.5,
-        editable: true,
-      },
-
-      {
-        field: 'members',
-        headerName: 'Members',
-        valueGetter: (params) =>
-          params.row.guests
-            ?.map((item) => item.firstName + ' ' + item.lastName)
-            .join(', '),
-        flex: 1,
-      },
-      {
-        field: 'children',
-        headerName: 'Children',
-
-        flex: 0.5,
-      },
-      {
-        field: 'delete',
-        headerName: ' ',
-        flex: 0.2,
-        align: 'center',
-        renderCell: (params) => (
-          <Tooltip
-            arrow
-            placement='left'
-            title={
-              this.props.role !== 'Admin'
-                ? 'Only admins may delete users'
-                : params.row.guests.length > 0
-                ? 'Can only delete groups with no members'
-                : 'Delete group'
-            }
-          >
-            <span style={{ display: 'flex', justifyContent: 'center' }}>
-              <IconButton
-                aria-label='delete'
-                onClick={this.deleteUser(params.id)}
-                disabled={
-                  this.props.role !== 'Admin' || params.row.guests.length > 0
-                    ? true
-                    : false
-                }
-              >
-                <DeleteIcon />
-              </IconButton>
-            </span>
-          </Tooltip>
-        ),
-      },
-      {
-        field: 'edit',
-        headerName: ' ',
-        flex: 0.2,
-        align: 'center',
-        renderCell: (params) => (
-          <IconButton
-            aria-label='edit'
-            onClick={() => this.fetchGroup(params.id)}
-          >
-            <EditIcon color='primary' />
-          </IconButton>
-        ),
-      },
-    ];
-
-    return (
-      <Grid container>
-        <Grid item xs></Grid>
-        <Grid item container md={6}>
-          <Dialog
-            open={this.state.openDialog}
-            onClose={this.handleDialogClose}
-            aria-labelledby='form-dialog-title'
-          >
-            {this.state.group ? (
-              <EditGroup
-                group={this.state.group}
-                fetchGroupList={this.fetchGroupList}
-                groups={this.state.groups}
-              />
-            ) : null}
-            <DialogActions>
-              <Typography variant='subtitle2' style={{ color: 'white' }}>
-                Changes saved automatically
-              </Typography>
-              <Button
-                onClick={this.handleDialogClose}
-                color='primary'
-                variant='contained'
-              >
-                Close
-              </Button>
-            </DialogActions>
-          </Dialog>
-          <Grid item xs={12}>
-            <Box
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                width: '100%',
-                height: '90vh',
-                padding: '16px',
-              }}
-            >
-              {this.state.groups ? (
-                <DataGrid
-                  density='comfortable'
-                  //@ts-ignore
-                  columns={columns}
-                  //@ts-ignore
-                  rows={this.state.filteredGroups}
-                  onEditCellChangeCommitted={this.handleEditCellChange}
-                  components={{ Toolbar: this.CustomToolbar }}
-                  disableColumnMenu
-                />
-              ) : null}
-            </Box>
-          </Grid>
-        </Grid>
-        <Grid item xs></Grid>
+            />
+          ) : null}
+        </Box>
       </Grid>
-    );
-  }
-}
+    </Grid>
+  );
+};
 
 export default GroupList;

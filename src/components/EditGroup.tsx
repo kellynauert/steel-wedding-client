@@ -13,9 +13,8 @@ import APIURL from '../helpers/environment';
 interface MyState {
   group: Group;
   open: boolean;
-  address: string | null;
-  phone: string | null;
   groupName: string | null;
+  children: number;
 }
 
 interface MyProps {
@@ -31,8 +30,7 @@ class EditGroup extends Component<MyProps, MyState> {
       group: this.props.group,
       open: false,
       groupName: this.props.group.groupName,
-      address: this.props.group.address,
-      phone: this.props.group.phone,
+      children: this.props.group.children,
     };
   }
   componentDidMount = () => {
@@ -43,8 +41,7 @@ class EditGroup extends Component<MyProps, MyState> {
       method: 'PUT',
       body: JSON.stringify({
         groupName: this.state.groupName,
-        address: this.state.address,
-        phone: this.state.phone,
+        children: this.state.children,
       }),
       headers: new Headers({
         'Content-Type': 'application/json',
@@ -60,7 +57,6 @@ class EditGroup extends Component<MyProps, MyState> {
     });
 
   handleTextChange = (e) => {
-    console.log(this.state.groupName, this.state.address, this.state.phone);
     // @ts-ignore
     this.setState({ [e.target.id]: e.target.value }, () => {
       this.saveGroup();
@@ -80,11 +76,11 @@ class EditGroup extends Component<MyProps, MyState> {
       <DialogContent className='cardBack'>
         <Card style={{ borderRadius: '4px' }} id='groupEdit'>
           <CardContent>
-            <Grid container spacing={3}>
+            <Grid container spacing={1}>
               <Grid item xs={12}>
                 <Typography variant='h2'>Group</Typography>
               </Grid>{' '}
-              <Grid item xs={12}>
+              <Grid item xs={9}>
                 <TextField
                   fullWidth
                   label='Group Name'
@@ -94,23 +90,14 @@ class EditGroup extends Component<MyProps, MyState> {
                   onChange={this.handleTextChange}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={3}>
                 <TextField
                   fullWidth
-                  label='Address'
-                  id='address'
-                  defaultValue={this.state.address}
+                  label='Children'
+                  id='children'
+                  defaultValue={this.state.children}
                   variant='outlined'
-                  onChange={this.handleTextChange}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label='Phone'
-                  id='phone'
-                  defaultValue={this.state.phone}
-                  variant='outlined'
+                  type='number'
                   onChange={this.handleTextChange}
                 />
               </Grid>

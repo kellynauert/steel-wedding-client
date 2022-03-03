@@ -28,8 +28,7 @@ export interface Guest {
 export interface Group {
   id: number;
   groupName: string;
-  address: string | null;
-  phone: string | null;
+  children: integer;
   createdAt: string;
   updatedAt: string;
   guests: Guest[];

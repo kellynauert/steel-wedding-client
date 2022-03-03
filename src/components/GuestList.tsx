@@ -125,7 +125,7 @@ const GuestList = () => {
 
   const fetchGuestList = async () => {
     if (localStorage.token) {
-      let thisData = await fetch(`${APIURL}/guest/master/`, {
+      let allData = await fetch(`${APIURL}/guest/master/`, {
         method: 'GET',
         headers: new Headers({
           'Content-Type': 'application/json',
@@ -142,16 +142,15 @@ const GuestList = () => {
       })
         .then((response) => response.json())
         .then((guestData) => {
-          let allData = thisData;
+          console.log(guestData);
           for (let guest of guestData) {
-            let data = guest;
+            let data = { ...guest };
             data.id = `plusOne-${guest.id}`;
             data.attending = true;
             data.plusOneAllowed = false;
             data.over21 = null;
             allData.push(data);
           }
-          console.log(allData, guests);
           setGuests(allData);
         });
     }
