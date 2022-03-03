@@ -105,7 +105,7 @@ const GuestComponent = ({ guestId }) => {
 
             {attending !== undefined ? (
               <Grid container item xs={12}>
-                <Grid item xs={12}>
+                <Grid item xs={12} style={{ margin: '8px 0' }}>
                   <Typography variant='h5'>Attendance</Typography>{' '}
                 </Grid>
                 <Grid item xs={12}>
@@ -136,7 +136,7 @@ const GuestComponent = ({ guestId }) => {
                 drinking !== undefined &&
                 drinks !== undefined ? (
                   <Grid container item xs={12}>
-                    <Grid item xs={12}>
+                    <Grid item xs={12} style={{ margin: '8px 0' }}>
                       <Typography variant='h5'>Drink Preferences</Typography>{' '}
                     </Grid>
                     <Grid
@@ -147,7 +147,7 @@ const GuestComponent = ({ guestId }) => {
                       style={{ whiteSpace: 'nowrap' }}
                     >
                       <FormControlLabel
-                        style={{ width: '100%' }}
+                        style={{ width: '100px' }}
                         checked={drinks.beer}
                         control={<Checkbox />}
                         label='Beer'
@@ -159,7 +159,7 @@ const GuestComponent = ({ guestId }) => {
                         }}
                       />
                       <FormControlLabel
-                        style={{ width: '100%' }}
+                        style={{ width: '100px' }}
                         checked={drinks.wine}
                         control={<Checkbox />}
                         label='Wine'
@@ -171,7 +171,7 @@ const GuestComponent = ({ guestId }) => {
                         }}
                       />
                       <FormControlLabel
-                        style={{ width: '100%' }}
+                        style={{ width: '100px' }}
                         checked={drinks.cider}
                         control={<Checkbox />}
                         label='Cider'
@@ -218,7 +218,7 @@ const GuestComponent = ({ guestId }) => {
 
                 {vegetarian !== undefined ? (
                   <Grid container item xs={12}>
-                    <Grid item xs={12}>
+                    <Grid item xs={12} style={{ margin: '8px 0' }}>
                       <Typography variant='h5'>Stew Preference</Typography>{' '}
                     </Grid>{' '}
                     <Grid item xs={12} container alignItems='center'>

@@ -6,6 +6,7 @@ import {
   Typography,
   TextField,
   AppBar,
+  Box,
   Paper,
 } from '@material-ui/core/';
 
@@ -64,6 +65,9 @@ const Rsvp = ({ mobile }) => {
     drawerPaper: {
       backgroundColor: theme.base.palette.primary.light,
       height: '100vh',
+      maxHeight: '100vh',
+      overflowY: 'scroll',
+      width: '100%',
     },
   }));
   const classes = useStyles();
@@ -86,6 +90,7 @@ const Rsvp = ({ mobile }) => {
         position='sticky'
         variant='outlined'
         style={{
+          top: '0',
           width: '100%',
           border: 'none',
           backgroundColor: '#f3d2dc',
@@ -108,14 +113,15 @@ const Rsvp = ({ mobile }) => {
           </Grid>
         </Grid>
       </AppBar>
-
       <Grid
         container
         spacing={1}
         style={{
+          overflow: 'hidden',
           padding: '16px',
           margin: '0',
           width: '100%',
+          paddingBottom: '64px',
         }}
       >
         {searchFunction().map((group, index) => {

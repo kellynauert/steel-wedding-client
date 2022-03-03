@@ -69,6 +69,14 @@ const Children = ({ groupId, children, attending }) => {
                   <AddCircleOutlineIcon />
                 </IconButton>
               </Grid>
+              <Grid item xs={12}>
+                <Typography variant='subtitle2'>
+                  Please feel free to bring toys, play pens, snacks, etc. for
+                  little ones. Play pens can be set up outside or in the
+                  basement, and the basement has several rooms if you need
+                  privacy.
+                </Typography>
+              </Grid>
             </Grid>
           ) : null}
         </CardContent>

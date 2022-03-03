@@ -44,6 +44,8 @@ const Home = ({ mobile, dimensions }) => {
       flexGrow: 1,
       backgroundColor: 'white',
       padding: theme.spacing(3),
+      textAlign: 'center',
+      marginBottom: '56px',
     },
   }));
   const classes = useStyles();
@@ -57,10 +59,6 @@ const Home = ({ mobile, dimensions }) => {
         container
         spacing={1}
         xs={12}
-        style={{
-          textAlign: 'center',
-          flexGrow: 1,
-        }}
       >
         <Card variant='outlined' style={{ border: 'none' }}>
           <CardContent>

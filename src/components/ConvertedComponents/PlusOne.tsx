@@ -11,9 +11,12 @@ import {
   Divider,
   Checkbox,
   Box,
+  Tooltip,
 } from '@material-ui/core/';
 import APIURL from '../../helpers/environment';
+import { withStyles, makeStyles } from '@material-ui/core/styles';
 
+import HelpRoundedIcon from '@material-ui/icons/HelpRounded';
 const PlusOne = ({
   deletePlusOne,
   plusOneId,
@@ -99,6 +102,14 @@ const PlusOne = ({
       }).then(() => setLoading(false));
     }
   }, [firstName, lastName, drinking, drinks, vegetarian]);
+  const LightTooltip = withStyles((theme) => ({
+    tooltip: {
+      backgroundColor: theme.palette.common.white,
+      color: 'rgba(0, 0, 0, 0.87)',
+      boxShadow: theme.shadows[1],
+      fontSize: 11,
+    },
+  }))(Tooltip);
 
   return (
     <>
@@ -113,7 +124,7 @@ const PlusOne = ({
               width: '100%',
             }}
           />
-          <Grid item xs={12}>
+          <Grid item xs={12} style={{ margin: '8px 0' }}>
             <Typography variant='h2'>Plus One</Typography>
           </Grid>
           {firstName !== undefined ? (
@@ -145,7 +156,7 @@ const PlusOne = ({
           <Divider />{' '}
           {drinking !== undefined && drinks !== undefined ? (
             <Grid container item xs={12}>
-              <Grid item xs={12}>
+              <Grid item xs={12} style={{ margin: '8px 0' }}>
                 <Typography variant='h5'>Drink Preferences</Typography>{' '}
               </Grid>
               <Grid
@@ -179,7 +190,6 @@ const PlusOne = ({
                   }}
                   style={{ width: '100px' }}
                 />
-                <Box width='100%'></Box>
                 <FormControlLabel
                   checked={drinks.cider}
                   control={<Checkbox />}
@@ -218,7 +228,7 @@ const PlusOne = ({
           ) : null}
           {vegetarian !== undefined ? (
             <Grid container item xs={12}>
-              <Grid item xs={12}>
+              <Grid item xs={12} style={{ margin: '8px 0' }}>
                 <Typography variant='h5'>Stew Preference</Typography>{' '}
               </Grid>{' '}
               <Grid item xs={12} container alignItems='center'>
@@ -254,22 +264,41 @@ const PlusOne = ({
             <Button onClick={() => deletePlusOne()}>Remove Plus One</Button>
           </Grid>
         </Grid>
-      ) : plusOneAllowed ? (
-        <Grid item xs={12}>
-          <hr
-            style={{
-              margin: '16px 0',
-              borderStyle: 'dashed',
-              borderWidth: 'thin',
-              opacity: '50%',
-              width: '100%',
-            }}
-          />
-          <Button onClick={() => createPlusOne()} disabled={!plusOneAllowed}>
-            Add Plus One
-          </Button>
+      ) : (
+        <Grid item xs={12} container alignItems='center'>
+          <Grid item xs={12}>
+            <hr
+              style={{
+                margin: '16px 0',
+                borderStyle: 'dashed',
+                borderWidth: 'thin',
+                opacity: '50%',
+                width: '100%',
+              }}
+            />
+          </Grid>
+          <Grid item>
+            <LightTooltip
+              disableFocusListener
+              title={
+                plusOneAllowed
+                  ? ''
+                  : 'Plus-ones have been limited to adults in long-term relationships. If we made a mistake, please contact Blake or Kelly.'
+              }
+            >
+              <span>
+                {' '}
+                <Button
+                  onClick={() => createPlusOne()}
+                  disabled={!plusOneAllowed}
+                >
+                  Add Plus One
+                </Button>
+              </span>
+            </LightTooltip>{' '}
+          </Grid>
         </Grid>
-      ) : null}
+      )}
     </>
   );
 };
