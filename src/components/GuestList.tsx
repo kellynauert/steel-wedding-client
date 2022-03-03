@@ -78,10 +78,14 @@ const GuestList = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
+    getAll();
+  }, []);
+
+  const getAll = () => {
     fetchGuestList();
     fetchGroups();
     fetchStats();
-  }, []);
+  };
   useEffect(() => console.log(searchTerm), [searchTerm]);
   useEffect(() => {
     if (guests.length > 0) {
@@ -165,7 +169,7 @@ const GuestList = () => {
       }),
     })
       .then((response) => response.json())
-      .then(fetchGuestList);
+      .then(getAll);
   };
 
   const createUser = () => {
@@ -236,7 +240,7 @@ const GuestList = () => {
 
   const handleDialogClose = () => {
     setOpenDialog(false);
-    fetchGuestList();
+    getAll();
   };
 
   let columns = [

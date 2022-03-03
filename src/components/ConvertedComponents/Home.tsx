@@ -142,7 +142,7 @@ const Home = ({ mobile, dimensions }) => {
                 <br />
                 <br />
                 <Link
-                  href='www.zola.com/registry/nauertsteelwedding'
+                  href='https://www.zola.com/registry/nauertsteelwedding'
                   target='_blank'
                   style={{ color: 'inherit', textDecoration: 'none' }}
                 >

@@ -200,9 +200,9 @@ class Login extends Component<MyProps, MyState> {
                     }}
                   />
                   <CardActions>
-                    <Button onClick={this.handleRegister} color='primary'>
+                    {/* <Button onClick={this.handleRegister} color='primary'>
                       Register
-                    </Button>
+                    </Button> */}
                     <Button onClick={this.handleSubmit} color='primary'>
                       Login
                     </Button>

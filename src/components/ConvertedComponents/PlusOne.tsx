@@ -10,13 +10,11 @@ import {
   RadioGroup,
   Divider,
   Checkbox,
-  Box,
   Tooltip,
 } from '@material-ui/core/';
 import APIURL from '../../helpers/environment';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 
-import HelpRoundedIcon from '@material-ui/icons/HelpRounded';
 const PlusOne = ({
   deletePlusOne,
   plusOneId,
@@ -102,14 +100,16 @@ const PlusOne = ({
       }).then(() => setLoading(false));
     }
   }, [firstName, lastName, drinking, drinks, vegetarian]);
-  const LightTooltip = withStyles((theme) => ({
-    tooltip: {
-      backgroundColor: theme.palette.common.white,
-      color: 'rgba(0, 0, 0, 0.87)',
-      boxShadow: theme.shadows[1],
-      fontSize: 11,
-    },
-  }))(Tooltip);
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleTooltipClose = () => {
+    setOpen(false);
+  };
+
+  const handleTooltipOpen = () => {
+    setOpen(true);
+  };
 
   return (
     <>
@@ -277,25 +277,35 @@ const PlusOne = ({
               }}
             />
           </Grid>
+
           <Grid item>
-            <LightTooltip
-              disableFocusListener
-              title={
-                plusOneAllowed
-                  ? ''
-                  : 'Plus-ones have been limited to adults in long-term relationships. If we made a mistake, please contact Blake or Kelly.'
-              }
-            >
-              <span>
-                {' '}
-                <Button
-                  onClick={() => createPlusOne()}
-                  disabled={!plusOneAllowed}
+            <ClickAwayListener onClickAway={handleTooltipClose}>
+              <div onClick={handleTooltipOpen}>
+                <Tooltip
+                  PopperProps={{
+                    disablePortal: true,
+                  }}
+                  onClose={handleTooltipClose}
+                  open={open}
+                  disableFocusListener
+                  disableHoverListener
+                  disableTouchListener
+                  title={
+                    plusOneAllowed
+                      ? ''
+                      : 'Plus-ones have been limited to adults in long-term relationships. If we made a mistake, please contact Blake or Kelly.'
+                  }
                 >
-                  Add Plus One
-                </Button>
-              </span>
-            </LightTooltip>{' '}
+                  <Button
+                    onClick={() => createPlusOne()}
+                    disabled={!plusOneAllowed}
+                    color='secondary'
+                  >
+                    Add Plus One
+                  </Button>
+                </Tooltip>
+              </div>
+            </ClickAwayListener>
           </Grid>
         </Grid>
       )}
